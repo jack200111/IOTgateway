@@ -1,7 +1,9 @@
 <!-- 网络 -->
 <template>
   <div class="content">
-    <h1>{{selectArr.selected==='动态'?'有线网卡':'无线网卡'}}</h1>
+    <h1>{{isWired?'有线网卡':'无线网卡'}}</h1>
+    <!-- 有线网卡 -->
+    <div v-show="isWired">
       <p>
       <span>{{selectArr.prop}}</span>
       <select
@@ -23,7 +25,33 @@
     <p v-for="(item) in inputArr" :key="item.prop +'1'" v-show="selectArr.selected==='静态'">
       <span>{{item.prop}}</span><input type="text"  :value="item.value" />
     </p>
-    <p v-show="selectArr.selected==='动态'">
+    </div>
+    <!-- 无线网卡 -->
+    <div v-show="!isWired">
+       <div>
+      <p>
+      <span>{{selectArr.prop}}</span>
+      <select
+        class="select"
+        v-model="selectArr.selected"
+      >
+        <option
+        v-for="(item2, index2) in selectArr.value"
+        :key="index2"
+        :value="item2"
+        >
+          {{ item2 }}
+        </option>
+      </select>
+    </p>
+    <p v-for="(item) in inputArr" :key="item.prop" v-show="selectArr.selected==='动态'">
+      <span>{{item.prop}}</span><input type="text" disabled :value="item.value" />
+    </p>
+    <p v-for="(item) in inputArr" :key="item.prop +'1'" v-show="selectArr.selected==='静态'">
+      <span>{{item.prop}}</span><input type="text"  :value="item.value" />
+    </p>
+    </div>
+    <p>
       <span>{{NoInterCar[0].prop}}</span>
       <select
         class="select"
@@ -38,9 +66,10 @@
         </option>
       </select>
     </p>
-    <p  v-show="selectArr.selected==='动态'">
+    <p>
       <span>{{NoInterCar[1].prop}}</span><input type="password" disabled :value="NoInterCar[1].value" />
     </p>
+    </div>
     <button @click="getValue" class="btn btn1">扫描</button>
     <button @click="save" class="btn btn1">保存及应用</button>
   </div>
@@ -50,6 +79,7 @@
 export default {
   data () {
     return {
+      isWired: false,
       selectArr: {
         selected: '静态',
         prop: 'IP类型',
