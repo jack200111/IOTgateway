@@ -121,7 +121,7 @@ export default {
       inputPORT: {
         prop: '本地端口',
         label: 'PORT',
-        value: '1030',
+        value: '1032',
         slot: '(1~65535)'
       }
     }

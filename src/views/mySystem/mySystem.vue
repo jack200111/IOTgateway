@@ -8,12 +8,13 @@
         <span class="prop-value">{{ item.value }}</span>
         <button class="absolute" v-if="item.btn">{{ item.btn }}</button>
       </p>
-      <p>
+      <!-- <p>
         <span><input type="text" class="inputWidth" /> 分钟无数据时重启</span>
         <button class="absolute">保存</button>
-      </p>
+      </p> -->
       <button class="btn btn1">重启设备</button>
-      <button class="btn">恢复出厂</button>
+      <button class="btn btn1">恢复出厂</button>
+      <button class="btn">时间校准</button>
     </div>
   </div>
 </template>
@@ -23,16 +24,14 @@ export default {
   data () {
     return {
       propArr: [
-        { prop: '设备名称', value: 'gw' },
-        { prop: '型号', value: 'Smart182' },
-        { prop: '固定版本', value: 'V20059' },
-        { prop: '系统版本', value: 'V105' },
-        { prop: '内核版本', value: 'L104' },
-        { prop: '设备ID', value: 'e46208429f0f402c' },
-        { prop: '设备MAC', value: '482b5bf3a234' },
-        { prop: '剩余内存', value: '47992kb' },
-        { prop: '运行时间', value: '0 days 11:57:50' },
-        { prop: 'RTC', value: '2023-04-13 11:16:44', btn: '标准' }
+        { prop: '设备名称', value: 'gw', label: '1' },
+        { prop: '型号', value: 'GW001', label: 'Model' },
+        { prop: '系统版本', value: 'V001', label: 'Version' },
+        { prop: '内核版本', value: 'Linux 4.4.19', label: 'Kernel' },
+        { prop: '设备ID', value: '662aa30f09a2f579', label: 'Serial' },
+        { prop: '以太网MAC', value: '112233445566', label: 'LanMAC' },
+        { prop: '无线网MAC', value: '', label: 'WifiMAC' },
+        { prop: 'RTC时间', value: '', label: '' }
       ]
     }
   }

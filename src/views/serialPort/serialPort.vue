@@ -97,7 +97,7 @@ export default {
           prop: '流控模式',
           label: 'FlowControl',
           selected: 'NONE',
-          value: ['NONE', 'XON/XOFF']
+          value: ['XON/XOFF']
         }
       ],
       SelectProp: [
@@ -121,7 +121,7 @@ export default {
       inputPORT: {
         prop: '本地端口',
         label: 'PORT',
-        value: '1030',
+        value: '1033',
         slot: '(1~65535)'
       }
     }
