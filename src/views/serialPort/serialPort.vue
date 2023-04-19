@@ -1,7 +1,6 @@
-<!-- 串口 -->
 <template>
   <div class="">
-    <h1>串口</h1>
+    <router-view></router-view>
   </div>
 </template>
 

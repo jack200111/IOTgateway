@@ -3,10 +3,11 @@
     <div class="login">
       <div class="title">登录</div>
       <div class="input">
-        <p><span>用户名: </span><input type="text" /></p>
+        <p><span>用户: </span><input type="text" /></p>
         <p><span>密码: </span><input type="text" /></p>
       </div>
-      <button @click="routerLink" class="btn">登录</button>
+      <button @click="routerLink" class="btn btn1">登录</button>
+      <button @click="routerLink" class="btn btn2">取消</button>
     </div>
   </div>
 </template>
@@ -45,9 +46,11 @@ export default {
     .input {
       input{
         outline: none;
+        height:20px;
       }
       p{
         height:40px;
+        font-size: 14px;
        span {
         width: 80px;
         display: inline-block;
@@ -56,11 +59,18 @@ export default {
     }
     .btn{
       margin-top: 10px;
-      background-color: #6490aa;
-      color: #fff;
       width:80px;
       padding:8px;
       border: none;
+    }
+    .btn1{
+      background-color: #6490aa;
+      color: #fff;
+      margin-right: 10px;
+    }
+    .btn2{
+      background-color: #fff;
+      color: #6490aa;
     }
   }
 }
