@@ -48,7 +48,7 @@ h1 {
   p {
     width: 900px;
     border-bottom: 1px solid #ccc;
-    height: 48px;
+    height: 42px;
     line-height: 48px;
     position: relative;
     .prop {
