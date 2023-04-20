@@ -6,33 +6,70 @@
       <p v-for="(item, index) in propArr" :key="index">
         <span class="prop">{{ item.prop }}:</span>
         <span class="prop-value">{{ item.value }}</span>
-        <button class="absolute" v-if="item.btn">{{ item.btn }}</button>
+        <!-- <button class="absolute" v-if="item.btn">{{ item.btn }}</button> -->
+      </p>
+      <p>
+        <span class="prop">RTCTime:</span>
+        <span class="prop-value">{{ RTCTime.value }}</span>
       </p>
       <!-- <p>
         <span><input type="text" class="inputWidth" /> 分钟无数据时重启</span>
         <button class="absolute">保存</button>
       </p> -->
       <button class="btn btn1">重启设备</button>
-      <button class="btn btn1">恢复出厂</button>
+      <button class="btn btn1" @click="reset">恢复出厂</button>
       <button class="btn">时间校准</button>
     </div>
   </div>
 </template>
 
 <script>
+import config from '@/config/sysinfo.conf'
+import getCurrentTime from '@/utils/getTime'
+import axios from 'axios'
 export default {
   data () {
     return {
-      propArr: [
-        { prop: '设备名称', value: 'gw', label: '1' },
-        { prop: '型号', value: 'GW001', label: 'Model' },
-        { prop: '系统版本', value: 'V001', label: 'Version' },
-        { prop: '内核版本', value: 'Linux 4.4.19', label: 'Kernel' },
-        { prop: '设备ID', value: '662aa30f09a2f579', label: 'Serial' },
-        { prop: '以太网MAC', value: '112233445566', label: 'LanMAC' },
-        { prop: '无线网MAC', value: '', label: 'WifiMAC' },
-        { prop: 'RTC时间', value: '', label: '' }
-      ]
+      propArr: config,
+      RTCTime: { prop: 'RTC时间', value: getCurrentTime(), label: '' }
+    }
+  },
+  mounted () {
+    setInterval(() => {
+      this.RTCTime.value = getCurrentTime()
+    }, 1000)
+    this.fetchData()
+  },
+  methods: {
+    fetchData () {
+      // const xhr = new XMLHttpRequest()
+      // xhr.open('GET', '/src/user/local/bin/recovery.sh')
+      // xhr.onload = () => {
+      //   this.data = xhr.responseText
+      // }
+      // xhr.send()
+
+      // axios.get('/src/user/local/bin/recovery.sh').then(response => {
+      // console.log(response.data)
+      // const data = JSON.parse(response.data)
+      // this.name = data.name
+      // this.age = data.age
+      // })
+      //
+      // mySystem.vue
+      axios.get('http://localhost:3000/api/data').then(response => {
+        console.log(response.data)
+      })
+      axios.get('http://localhost:3000/api/run-script')
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.error(error))
+      axios.get('http://localhost:3000/api/getData').then(response => {
+        console.log(response.data)
+      })
+    },
+    reset () {
+      this.fetchData()
     }
   }
 }
