@@ -84,6 +84,7 @@
 
 <script>
 import configIni from '@/config/uart2.ini'
+import axios from 'axios'
 export default {
   mounted () {
     this.config = configIni.uart2
@@ -172,10 +173,16 @@ export default {
       // router.push('/myHome/mySystem')
     },
     save () {
-      this.readIniFile()
+      // this.readIniFile()
       if (confirm('设备重启生效是否继续')) {
-        //
+        this.fetchData()
       }
+    },
+    fetchData () {
+      axios.get('http://localhost:3000/api/run-script')
+        .then(result => console.log(result, 1))
+      // .then(response => response.text())
+        .catch(error => console.error(error))
     }
   },
   watch: {

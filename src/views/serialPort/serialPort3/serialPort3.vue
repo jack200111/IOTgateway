@@ -83,26 +83,26 @@
 </template>
 
 <script>
-import configIni from '@/config/uart2.ini'
+import configIni from '@/config/uart3.ini'
 export default {
   mounted () {
-    this.config = configIni.uart2
-    this.inputBaudrate.value = configIni.uart2.Baudrate.split(',')[0]
-    Object.keys(configIni.uart2).forEach((item) => {
+    this.config = configIni.uart3
+    this.inputBaudrate.value = configIni.uart3.Baudrate.split(',')[0]
+    Object.keys(configIni.uart3).forEach((item) => {
       this.SelectArr.forEach((item2) => {
         if (item === item2.label) {
-          item2.value = configIni.uart2[item].split(',')
+          item2.value = configIni.uart3[item].split(',')
         }
       })
       this.SelectProp.forEach((item2) => {
         if (item === item2.label) {
           if (item2.label === 'Service') {
-            item2.value = configIni.uart2[item].split(',')
+            item2.value = configIni.uart3[item].split(',')
           }
         }
       })
     })
-    this.inputPORT.value = configIni.uart2.PORT
+    this.inputPORT.value = configIni.uart3.PORT
   },
   data () {
     return {

@@ -108,7 +108,7 @@
         </div>
       </div>
     </div>
-    <button @click="getValue" class="btn btn1">扫描</button>
+    <button @click="getScanResults" class="btn btn1">扫描</button>
     <button @click="save" class="btn btn1">保存及应用</button>
   </div>
 </template>
@@ -116,6 +116,8 @@
 <script>
 import netConfig from '@/config/netconfig.conf'
 import wifiConfig from '@/config/wificonfig.conf'
+import axios from 'axios'
+
 export default {
   data () {
     return {
@@ -144,7 +146,7 @@ export default {
     getValue () {
       // router.push('/myHome/mySystem')
       const xhr = new XMLHttpRequest()
-      xhr.open('GET', '/src/tmp/iwscan.tmp')
+      xhr.open('GET', 'http://localhost:3000/src/tmp/iwscan.tmp')
       xhr.onload = () => {
         console.log(xhr.responseText)
         this.data = xhr.responseText
@@ -153,6 +155,29 @@ export default {
     },
     save () {
       confirm('设备重启生效是否继续')
+    },
+    getScanResults () {
+      axios.get('http://localhost:3002/read_scan_results') // 发送GET请求
+        .then(response => {
+          // this.ssids = response.data.split('\n').filter(Boolean) // 将响应数据转换为数组并过滤掉空字符串
+          // console.log(response.data.split('\n').filter(Boolean))
+          // const ssidList = []
+          // console.log(response.data.split('\n'))
+          // const lines = response.data.split('\n')
+          // for (const line of lines) {
+          //   if (line.startsWith('SSID: ')) {
+          //     const ssid = line.slice(6) // 提取 SSID 数据
+          //     ssidList.push(ssid) // 添加到数组中
+          //   }
+          // }
+          // console.log(ssidList[0])
+          console.log(response.data.slice(6))
+          this.NoInterCar[0].value = [response.data.slice(6)]
+          console.log(this.NoInterCar[0])
+        })
+        .catch(error => {
+          console.log(error)
+        })
     }
   },
   mounted () {

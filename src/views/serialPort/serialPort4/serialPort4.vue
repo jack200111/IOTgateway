@@ -10,23 +10,37 @@
       </p>
       <p v-for="(item, index) in SelectArr" :key="index">
         <span>{{ item.prop }}</span>
-        <select class="select" v-model="item.selected">
-          <option
-            v-for="(item2, index2) in item.value"
-            :key="index2"
-            :value="item2"
-          >
-            {{ item2 }}
-          </option>
-        </select>
+        <template v-if="item.label !== 'TYPE'">
+          <select class="select" v-model="item.selected">
+            <option
+              v-for="(item2, index2) in item.value"
+              :key="index2"
+              :value="item2"
+            >
+              {{ item2 }}
+            </option>
+          </select>
+        </template>
+        <template v-else>
+          <select class="select" v-model="item.selected" disabled>
+            <option
+              v-for="(item2, index2) in item.value"
+              :key="index2"
+              :value="item2"
+            >
+              {{ item2 }}
+            </option>
+          </select>
+        </template>
         <span class="unit" v-if="item.slot">&nbsp;{{ item.slot }}</span>
       </p>
       <div>
         <span>工作方式</span>
-        <div
-          class="inlineBlockDiv"
-        >
-          <select class="select selectMarginRight" v-model="SelectProp[0].selected">
+        <div class="inlineBlockDiv">
+          <select
+            class="select selectMarginRight"
+            v-model="SelectProp[0].selected"
+          >
             <option
               v-for="(item2, index2) in SelectProp[0].value"
               :key="index2"
@@ -35,21 +49,26 @@
               {{ item2 }}
             </option>
           </select>
-          <span class="unit" v-if="SelectProp[0].slot">&nbsp;{{ SelectProp[0].slot }}</span>
+          <span class="unit" v-if="SelectProp[0].slot"
+            >&nbsp;{{ SelectProp[0].slot }}</span
+          >
         </div>
-        <div
-          class="inlineBlockDiv"
-        >
-          <select class="select selectMarginRight" v-model="SelectProp[1].selected">
+        <div class="inlineBlockDiv">
+          <select
+            class="select selectMarginRight"
+            v-model="SelectProp[1].selected"
+          >
             <option
-              v-for="(item2, index2) in SelectProp[1].value[SelectProp[0].selected]"
+              v-for="(item2, index2) in SelectProp[1].value[
+                SelectProp[0].selected
+              ]"
               :key="index2"
               :value="item2"
             >
               {{ item2 }}
             </option>
           </select>
-          <span class="unit" v-if="SelectProp[1].slot">&nbsp;{{ SelectProp[1].slot }}</span>
+          <span class="unit">&nbsp;{{ SelectProp[1].slot }}</span>
         </div>
       </div>
       <p>
@@ -58,21 +77,43 @@
         <span class="unit">&nbsp;{{ inputPORT.slot }}</span>
       </p>
     </div>
+    <!-- <p>Database Baudrate: {{ config }}</p> -->
     <button @click="save" class="btn btn1">保存及应用</button>
   </div>
 </template>
 
 <script>
+import configIni from '@/config/uart4.ini'
 export default {
+  mounted () {
+    this.config = configIni.uart4
+    this.inputBaudrate.value = configIni.uart4.Baudrate.split(',')[0]
+    Object.keys(configIni.uart4).forEach((item) => {
+      this.SelectArr.forEach((item2) => {
+        if (item === item2.label) {
+          item2.value = configIni.uart4[item].split(',')
+        }
+      })
+      this.SelectProp.forEach((item2) => {
+        if (item === item2.label) {
+          if (item2.label === 'Service') {
+            item2.value = configIni.uart4[item].split(',')
+          }
+        }
+      })
+    })
+    this.inputPORT.value = configIni.uart4.PORT
+  },
   data () {
     return {
+      config: '',
       isWired: false,
       SelectArr: [
         {
           prop: '数据位',
           label: 'Databits',
           selected: '8',
-          value: ['8', '7'],
+          value: ['8', '6'],
           slot: 'bit'
         },
         {
@@ -90,24 +131,24 @@ export default {
         {
           prop: '当前串口模式',
           label: 'TYPE',
-          selected: 'RS485',
-          value: ['RS485', 'RS232']
+          selected: 'RS232',
+          value: ['RS232']
         },
         {
           prop: '流控模式',
           label: 'FlowControl',
-          selected: 'NONE',
-          value: ['XON/XOFF']
+          selected: 'XON',
+          value: ['NONE', 'XON', 'XOFF']
         }
       ],
       SelectProp: [
         {
-          label: '',
+          label: 'Service',
           selected: 'TCPServer',
           value: ['TCPServer', 'Websocket']
         },
         {
-          label: '',
+          label: 'FlowControl',
           selected: 'None',
           value: { TCPServer: ['None', 'ModbusTCP'], Websocket: ['None'] }
         }
@@ -121,7 +162,7 @@ export default {
       inputPORT: {
         prop: '本地端口',
         label: 'PORT',
-        value: '1033',
+        value: '1030',
         slot: '(1~65535)'
       }
     }
@@ -131,8 +172,13 @@ export default {
       // router.push('/myHome/mySystem')
     },
     save () {
-      confirm('设备重启生效是否继续')
+      this.readIniFile()
+      if (confirm('设备重启生效是否继续')) {
+        //
+      }
     }
+  },
+  watch: {
   }
 }
 </script>
