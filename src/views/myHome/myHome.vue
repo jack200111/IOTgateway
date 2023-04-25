@@ -67,14 +67,6 @@ export default {
       this.ActiveChildIndex = index
     }
   },
-  // watch: {
-  //   ActiveChildIndex (newValue, oldValue) {
-  //     console.log(newValue)
-  //     if (newValue) {
-  //       this.ActiveIndex = -1
-  //     }
-  //   }
-  // },
   computed: {
     ...mapState({
       routerArr: (state) => state.routerArr.routerArr

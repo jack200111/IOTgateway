@@ -6,7 +6,17 @@ export default {
     iniData: {}
   },
   getters: {},
-  mutations: {},
+  mutations: {
+    changeUser (state, payload) {
+      state.user = payload
+    },
+    changePassword (state, payload) {
+      state.password = payload
+    },
+    changeIniData (state, payload) {
+      state.iniData = payload
+    }
+  },
   actions: {},
   modules: {}
 }

@@ -8,13 +8,12 @@
         <p><span>确认密码: </span><input type="password" v-model="newPassword2"/></p>
       </div>
       <button @click="routerLink" @keyup.enter="routerLink" class="btn btn1">登录</button>
-      <button @click="routerLink" class="btn btn2">取消</button>
+      <button @click="clearPassword" class="btn btn2">取消</button>
     </div>
   </div>
 </template>
 
 <script>
-// import router from 'vue-router'
 import http from '@/utils/http'
 import { mapState } from 'vuex'
 import md5 from 'js-md5'
@@ -27,20 +26,22 @@ export default {
     }
   },
   computed: {
-    // password () {
-    //   return this.$store.state.password
-    // },
     ...mapState({
       // 第一个参数是state的属性名，第二个参数是state的别名
-      user: state => state.user,
-      password: state => state.password,
-      iniData: state => state.iniData
+      user: state => state.user.user,
+      password: state => state.user.password,
+      iniData: state => state.user.iniData
     })
+  },
+  async mounted () {
+    if (!this.password) {
+      await this.getIni()
+    }
   },
   methods: {
     async routerLink () {
-    // router.push('/myHome/mySystem')
       // console.log(await this.getIni())
+      // 刷新页面数据丢失 重新请求
       if (this.oldPassword !== this.password) {
         alert('原密码错误')
         this.clearPassword()
@@ -63,35 +64,34 @@ export default {
           return
         }
         // 写入
-        // console.log(this.oldPassword)
-        // console.log(this.newPassword1)
-        // console.log(this.newPassword2)
         // console.log(this.iniData)
-        // 找到当前项 修改
+        // 找到当前项 修改密码
         Object.keys(this.iniData).forEach((item) => {
-          console.log(item, this.user)
           if (item === this.user) {
             this.iniData[item].password = this.newPassword1
             this.iniData[item].MD5 = md5(this.newPassword1)
           }
         })
-        await http.post('/loginPost', this.iniData)
+        // 写入请求
+        await http.post('/loginPost', { iniData: this.iniData })
         alert('密码修改成功')
+        this.clearPassword()
       }
     },
-    // async postIni () {
-    //   const res = await http.post('/loginPost', this.iniData)
-    //   console.log(res)
-    //   return this.iniData
-    // },
     async getIni () {
+      // 请求所有账号
       const res = await http.get('/login')
+      // 获取当前账号信息
       let currentObject = {}
       Object.keys(res.data).forEach((item) => {
         if (item === localStorage.getItem('user')) {
           currentObject = res.data[item]
         }
       })
+      // 重新保存仓库
+      this.$store.commit('changeIniData', res.data)
+      this.$store.commit('changeUser', currentObject.user)
+      this.$store.commit('changePassword', currentObject.password)
       return currentObject
     },
     clearPassword () {

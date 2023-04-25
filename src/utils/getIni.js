@@ -28,33 +28,42 @@ function parseIni (filePath) {
   return result
 }
 function jsonData (filePath, jsonData) {
-// 修改jsonData中的值
+  // 修改jsonData中的值
 
   let iniData = ''
-  if (Object.keys(jsonData)[0] === 'iniData') {
-    for (const key in jsonData) {
-      iniData += `[${key}]\nuser=${jsonData[key].user}\npassword=${jsonData[key].password}\nMD5=${jsonData[key].MD5}\n`
+  // 传过来的对象的属性名
+  const keyName = Object.keys(jsonData)[0]
+  // 传过来的数据值
+  const data = jsonData[keyName]
+  // 传过来的数据
+  console.log(jsonData, 'jsonData')
+
+  if (keyName === 'iniData') {
+    for (const key in data) {
+      console.log(data, 'data')
+      iniData += `[${key}]\nuser=${data[key].user}\npassword=${data[key].password}\nMD5=${data[key].MD5}\n`
     }
   }
-  if (Object.keys(jsonData)[0] === 'zabbixAgent') {
-    iniData += `[${Object.keys(jsonData)[0]}]\n`
-    jsonData[Object.keys(jsonData)[0]].forEach((item) => {
+  if (keyName === 'zabbixAgent') {
+    iniData += `[${keyName}]\n`
+    data.forEach((item) => {
       iniData += `${item.label}=${item.value}\n`
     })
   }
+
+  // 串口
   const uarts = ['UART1', 'UART2', 'UART3', 'UART4']
-  if (uarts.includes(Object.keys(jsonData)[0])) {
-    iniData += `[${Object.keys(jsonData)[0]}]\n`
-    iniData += `NAME=${Object.keys(jsonData)[0]}\n`
-    jsonData[Object.keys(jsonData)[0]].forEach((item) => {
+  if (uarts.includes(keyName)) {
+    iniData += `[${keyName}]\n`
+    iniData += `NAME=${keyName}\n`
+    data.forEach((item) => {
       iniData += `${item.label}=${item.selected}\n`
     })
   }
 
-  console.log(jsonData, 'jsonData')
-  if (Object.keys(jsonData)[0] === 'netconfig' || Object.keys(jsonData)[0] === 'wificonfig') {
-    console.log('netconfig')
-    iniData += `[${Object.keys(jsonData)[0]}]\n`
+  // 无线 有限网络设置
+  if (keyName === 'netconfig' || keyName === 'wificonfig') {
+    iniData += `[${keyName}]\n`
     for (const key in jsonData) {
       for (let i = 0; i < jsonData[key].length; i++) {
         const element = jsonData[key][i]
@@ -67,9 +76,9 @@ function jsonData (filePath, jsonData) {
     }
   }
 
-  console.log(iniData, 'iniData')
   // 将ini文件写入文件
+  console.log(iniData, 'iniData')
   fs.writeFileSync(filePath, iniData)
-  const content2 = fs.readFileSync(filePath, 'utf-8')
-  console.log(content2)
+  // 检查：读取文件
+  console.log(fs.readFileSync(filePath, 'utf-8'))
 }
