@@ -14,25 +14,16 @@
               :key="index2"
               :value="item2"
             >
-              {{ item2 }}
+              {{ item2==='ON'?'动态':'静态' }}
             </option>
           </select>
         </p>
         <p
           v-for="item in inputInterArr"
           :key="item.prop"
-          v-show="InterSelectArr.selected === '动态'"
         >
           <span>{{ item.prop }}</span
-          ><input type="text" disabled :value="item.value" />
-        </p>
-        <p
-          v-for="item in inputInterArr"
-          :key="item.prop + '1'"
-          v-show="InterSelectArr.selected === '静态'"
-        >
-          <span>{{ item.prop }}</span
-          ><input type="text" :value="item.value" />
+          ><input type="text" :disabled="InterSelectArr.selected === 'ON'" v-model="item.value" />
         </p>
       </div>
       <!-- 无线网卡 -->
@@ -47,47 +38,21 @@
                 :key="index2"
                 :value="item2"
               >
-                {{ item2 }}
+                  {{ item2==='ON'?'动态':'静态' }}
               </option>
             </select>
           </p>
-          <div v-show="NoInterSelectArr.selected === '静态'">
+          <div >
             <p
               v-for="item in inputNoInterCar"
               :key="item.prop"
             >
               <span>{{ item.prop }}</span
-              ><input type="text" disabled :value="item.value" />
+              ><input type="text" :disabled="NoInterSelectArr.selected === 'ON'" v-model="item.value" />
             </p>
             <p>
               <span>{{ NoInterCar[0].prop }}</span>
-              <select class="select" v-model="inputNoInterCar[0].selected" disabled>
-                <option
-                  v-for="(item2, index2) in inputNoInterCar[0].value"
-                  :key="index2"
-                  :value="item2"
-                >
-                  {{ item2 }}
-                </option>
-              </select>
-            </p>
-            <p>
-            <span>{{ NoInterCar[1].prop }}</span
-            ><input
-              type="password"
-              disabled
-              :value="NoInterCar[1].value"
-            />
-          </p>
-          </div>
-          <div v-show="NoInterSelectArr.selected === '动态'">
-            <p v-for="item in inputNoInterCar" :key="item.prop + '1'">
-              <span>{{ item.prop }}</span
-              ><input type="text" :value="item.value" />
-            </p>
-            <p>
-              <span>{{ NoInterCar[0].prop }}</span>
-              <select class="select" v-model="NoInterCar[0].selected" >
+              <select class="select" v-model="NoInterCar[0].selected" :disabled="NoInterSelectArr.selected === 'ON'">
                 <option
                   v-for="(item2, index2) in NoInterCar[0].value"
                   :key="index2"
@@ -98,11 +63,12 @@
               </select>
             </p>
             <p>
-            <span>{{ NoInterCar[1].prop }}</span
-            ><input
-              type="password"
-              :value="NoInterCar[1].value"
-            />
+              <span>{{ NoInterCar[1].prop }}</span
+              ><input
+                type="password"
+                :disabled="NoInterSelectArr.selected === 'ON'"
+                v-model="NoInterCar[1].value"
+              />
           </p>
           </div>
         </div>
@@ -114,35 +80,89 @@
 </template>
 
 <script>
-import netConfig from '@/config/netconfig.conf'
-import wifiConfig from '@/config/wificonfig.conf'
+// import wifiConfig from '@/config/wificonfig.conf'
 import axios from 'axios'
-
+// import parseIni from '@/utils/getIni'
+import http from '@/utils/http'
 export default {
   data () {
     return {
       isWired: false,
-      inputInterArr: netConfig.inputInterArr,
-      inputNoInterCar: wifiConfig.inputNoInterCar,
-      InterSelectArr: netConfig.InterSelectArr,
-      InterCar: netConfig.InterCar,
-      // NoInterCar: wifiConfig.NoInterCar,
-      NoInterSelectArr: wifiConfig.InterSelectArr,
+      inputInterArr: [
+        {
+          prop: 'IP地址',
+          value: '172.16.128.15',
+          label: 'IP'
+        },
+        {
+          prop: '子网掩码',
+          label: 'Subnet',
+          value: '255.255.255.1'
+        },
+        {
+          prop: '网关',
+          label: 'Gateway',
+          value: '172.16.128.255'
+        },
+        {
+          prop: 'DNS',
+          label: 'DNS',
+          value: '114.114.114.115'
+        }
+      ],
+      inputNoInterCar: [
+        {
+          prop: 'IP地址',
+          value: '172.16.128.12',
+          label: 'IP'
+        },
+        {
+          prop: '子网掩码',
+          label: 'Subnet',
+          value: '255.255.255.1'
+        },
+        {
+          prop: '网关',
+          label: 'Gateway',
+          value: '172.16.128.255'
+        },
+        {
+          prop: 'DNS',
+          label: 'DNS',
+          value: '114.114.114.115'
+        }
+      ],
+      InterSelectArr: {
+        selected: 'OFF',
+        prop: 'IP类型',
+        label: 'DHCP',
+        value: ['OFF', 'ON']
+      },
+      NoInterSelectArr: {
+        selected: 'OFF',
+        prop: 'IP类型',
+        label: 'DHCP',
+        value: ['OFF']
+      },
       NoInterCar: [
         {
           prop: 'SSID',
+          selected: [],
           label: 'SSID',
-          value: ['']// ruien
+          value: []// ruien
         },
         {
           prop: '密码',
           label: 'Passwd',
-          value: '21680186'
+          value: ''
         }
       ]
     }
   },
   methods: {
+    changeVal (e) {
+      console.log(e)
+    },
     getValue () {
       // router.push('/myHome/mySystem')
       const xhr = new XMLHttpRequest()
@@ -153,11 +173,28 @@ export default {
       }
       xhr.send()
     },
-    save () {
-      confirm('设备重启生效是否继续')
+    async save () {
+      if (confirm('设备重启生效是否继续')) {
+        // 获取最终的数据格式
+        // axios.post('http://localhost:3000/saveNetconfig', this.inputInterArr).then(res => {
+        //   console.log(res)
+        // })
+        console.log(this.inputInterArr)
+        console.log(this.InterSelectArr)
+        const netconfig = [...this.inputInterArr, this.InterSelectArr]
+        const wificonfig = [...this.inputNoInterCar, this.NoInterSelectArr, ...this.NoInterCar]
+        console.log({ wificonfig: netconfig })
+        const res = await http.post('/netconfigPost', { netconfig })
+        const res2 = await http.post('/wificonfigPath', { wificonfig })
+        console.log(res)
+        console.log(res2)
+        // console.log(this.inputNoInterCar)
+        // console.log(this.NoInterSelectArr)
+        // console.log(this.NoInterCar)
+      }
     },
     getScanResults () {
-      axios.get('http://localhost:3002/read_scan_results') // 发送GET请求
+      axios.get('http://localhost:3000/read_scan_results') // 发送GET请求
         .then(response => {
           // this.ssids = response.data.split('\n').filter(Boolean) // 将响应数据转换为数组并过滤掉空字符串
           // console.log(response.data.split('\n').filter(Boolean))
@@ -178,10 +215,55 @@ export default {
         .catch(error => {
           console.log(error)
         })
+    },
+    fetchData () {
+      axios.get('http://localhost:3000/myNetwork').then(res => {
+        console.log(res.data.netconfig)
+        Object.keys(res.data.netconfig).forEach((item) => {
+          this.inputInterArr.forEach((item2) => {
+            if (item === item2.label) {
+              console.log(item2)
+              item2.value = res.data.netconfig[item]
+            }
+          })
+          if (item === this.InterSelectArr.label) {
+            if (this.InterSelectArr.label === 'DHCP') {
+              this.InterSelectArr.value = res.data.netconfig[item].split(',')
+            }
+          }
+        })
+      })
+      axios.get('http://localhost:3000/wificonfig').then(res => {
+        console.log(res.data.wificonfig)
+        Object.keys(res.data.wificonfig).forEach((item) => {
+          this.inputNoInterCar.forEach((item2) => {
+            if (item === item2.label) {
+              console.log(item2)
+              item2.value = res.data.wificonfig[item]
+            }
+          })
+          if (item === this.NoInterSelectArr.label) {
+            if (this.NoInterSelectArr.label === 'DHCP') {
+              this.NoInterSelectArr.value = res.data.wificonfig[item].split(',')
+            }
+          }
+          this.NoInterCar.forEach((item2) => {
+            if (item === item2.label) {
+              if (item2.label === 'Passwd') {
+                item2.value = res.data.wificonfig[item]
+              }
+            }
+          })
+        })
+      })
+      // axios.get('http://localhost:3000/netconfig').then(res => {
+      //   console.log(res)
+      // })
     }
   },
   mounted () {
-    console.log(netConfig.inputArr)
+    // console.log(parseIni)
+    this.fetchData()
   }
 }
 </script>

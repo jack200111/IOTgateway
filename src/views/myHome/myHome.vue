@@ -4,10 +4,10 @@
     <div class="top">
       <div class="title">瑞恩科技</div>
       <div class="middle">IOT网关</div>
-      <div class="btn">
+      <!-- <div class="btn">
         <button class="btn1">English</button>
-        <button class="btn2">重启</button>
-      </div>
+        <button class="btn2" @click="pushLogin">重启</button>
+      </div> -->
     </div>
     <div class="flx">
       <div class="left">
@@ -51,7 +51,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route, this.routerArr)
+    // console.log(this.$route, this.routerArr)
     if (this.$route.matched.length < 3) {
       const index = this.routerArr.findIndex(
         (item) => item.meta.title === this.$route.meta.title)
@@ -101,6 +101,9 @@ export default {
       )
       this.ActiveChildIndex = index
       router.push('/myHome/serialPort/' + this.routerArr[this.ActiveIndex].children[this.ActiveChildIndex].path)
+    },
+    pushLogin () {
+      router.push('/myLogin')
     }
   }
 }

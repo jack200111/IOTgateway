@@ -4,11 +4,11 @@
     <h1>zabbix代理</h1>
     <!-- 有线网卡 -->
     <div>
-      <p v-for="(item) in inputArr" :key="item.prop">
-        <span>{{item.prop}}</span><input type="text"  :value="item.value" />
+      <p v-for="(item) in zabbixAgent" :key="item.prop">
+        <span>{{item.prop}}</span><input type="text"  v-model="item.value" />
       </p>
       <p>
-        <span>备注提示</span><textarea v-model="textArea"> </textarea>
+        <span>备注提示</span><textarea v-model="textArea.value"> </textarea>
       </p>
     </div>
     <button @click="save" class="btn btn1">保存及应用</button>
@@ -16,20 +16,67 @@
 </template>
 
 <script>
-import toNetwork from '@/config/toNetwork.conf'
+// import toNetwork from '@/config/toNetwork.conf'
+import http from '@/utils/http'
 export default {
+  created () {
+    this.fetchData()
+  },
   data () {
     return {
-      inputArr: toNetwork.inputArr,
-      textArea: toNetwork.textArea
+      // zabbixAgent: toNetwork.zabbixAgent,
+      // textArea: toNetwork.textArea
+      zabbixAgent: [
+        {
+          prop: '设备名称',
+          value: '', // 172.16.128.14
+          label: 'HOSTNAME'
+        },
+        {
+          prop: '服务器地址',
+          label: 'SERVER',
+          value: '' // 172.16.128.13
+        },
+        {
+          prop: '服务端口',
+          label: 'PORT',
+          value: '' // 10050
+        }
+      ],
+      textArea: {
+        prop: '备注提示',
+        label: 'TEXTAREA',
+        value: '' // 10050
+      }// 串口需启用TCPServer+ModbusTCP
     }
   },
   methods: {
     getValue () {
       // router.push('/myHome/mySystem')
     },
-    save () {
-      confirm('设备重启生效是否继续')
+    async save () {
+      if (confirm('设备重启生效是否继续')) {
+        const zabbixAgent = [...this.zabbixAgent, this.textArea]
+        console.log(zabbixAgent)
+        const res = await http.post('/zabbixAgentPost', { zabbixAgent })
+        console.log(res)
+      }
+    },
+    fetchData () {
+      http.get('/zabbixAgent').then(res => {
+        console.log(res.data.zabbixAgent)
+        Object.keys(res.data.zabbixAgent).forEach((item) => {
+          this.zabbixAgent.forEach((item2) => {
+            if (item === item2.label) {
+              console.log(item2)
+              item2.value = res.data.zabbixAgent[item]
+            }
+            if (item === 'TEXTAREA') {
+              this.textArea.value = res.data.zabbixAgent.TEXTAREA
+            }
+          })
+        })
+      })
     }
   }
 }

@@ -5,24 +5,14 @@
     <div>
       <p>
         <span>{{ inputBaudrate.prop }}</span
-        ><input type="text" :value="inputBaudrate.value" />
+        ><input type="text" v-model="inputBaudrate.selected" />
         <span class="unit">&nbsp;{{ inputBaudrate.slot }}</span>
       </p>
       <p v-for="(item, index) in SelectArr" :key="index">
         <span>{{ item.prop }}</span>
-        <template v-if="item.label !== 'TYPE'">
-          <select class="select" v-model="item.selected">
-            <option
-              v-for="(item2, index2) in item.value"
-              :key="index2"
-              :value="item2"
-            >
-              {{ item2 }}
-            </option>
-          </select>
-        </template>
-        <template v-else>
-          <select class="select" v-model="item.selected" disabled>
+        <template>
+          <!-- :disabled="item.label !== 'TYPE'" -->
+          <select class="select" v-model="item.selected" >
             <option
               v-for="(item2, index2) in item.value"
               :key="index2"
@@ -40,6 +30,7 @@
           <select
             class="select selectMarginRight"
             v-model="SelectProp[0].selected"
+            @change="onCountryChange"
           >
             <option
               v-for="(item2, index2) in SelectProp[0].value"
@@ -59,9 +50,7 @@
             v-model="SelectProp[1].selected"
           >
             <option
-              v-for="(item2, index2) in SelectProp[1].value[
-                SelectProp[0].selected
-              ]"
+              v-for="(item2, index2) in SelectProp[1].value"
               :key="index2"
               :value="item2"
             >
@@ -73,7 +62,7 @@
       </div>
       <p>
         <span>{{ inputPORT.prop }}</span
-        ><input type="text" class="smallInput" :value="inputPORT.value" />
+        ><input type="text" class="smallInput" v-model="inputPORT.selected" />
         <span class="unit">&nbsp;{{ inputPORT.slot }}</span>
       </p>
     </div>
@@ -83,26 +72,10 @@
 </template>
 
 <script>
-import configIni from '@/config/uart4.ini'
+import http from '@/utils/http'
 export default {
   mounted () {
-    this.config = configIni.uart4
-    this.inputBaudrate.value = configIni.uart4.Baudrate.split(',')[0]
-    Object.keys(configIni.uart4).forEach((item) => {
-      this.SelectArr.forEach((item2) => {
-        if (item === item2.label) {
-          item2.value = configIni.uart4[item].split(',')
-        }
-      })
-      this.SelectProp.forEach((item2) => {
-        if (item === item2.label) {
-          if (item2.label === 'Service') {
-            item2.value = configIni.uart4[item].split(',')
-          }
-        }
-      })
-    })
-    this.inputPORT.value = configIni.uart4.PORT
+    this.fetchData()
   },
   data () {
     return {
@@ -131,14 +104,14 @@ export default {
         {
           prop: '当前串口模式',
           label: 'TYPE',
-          selected: 'RS232',
-          value: ['RS232']
+          selected: 'RS485',
+          value: ['RS485', 'RS232']
         },
         {
           prop: '流控模式',
           label: 'FlowControl',
-          selected: 'XON',
-          value: ['NONE', 'XON', 'XOFF']
+          selected: 'NONE',
+          value: ['NONE', 'XON/XOFF']
         }
       ],
       SelectProp: [
@@ -148,37 +121,79 @@ export default {
           value: ['TCPServer', 'Websocket']
         },
         {
-          label: 'FlowControl',
+          label: 'ModbusTCP',
           selected: 'None',
-          value: { TCPServer: ['None', 'ModbusTCP'], Websocket: ['None'] }
+          value: ['None', 'ModbusTCP']
         }
       ],
+      ModbusTCP: {
+        label: 'ModbusTCP',
+        selected: 'ON'
+      },
+      SelectAll: ['None', 'ModbusTCP', 'None'],
       inputBaudrate: {
         prop: '波特率',
         label: 'Baudrate',
-        value: '115200',
+        selected: '115200',
         slot: '(600~921600)bps'
       },
       inputPORT: {
         prop: '本地端口',
         label: 'PORT',
-        value: '1030',
+        selected: '1030',
         slot: '(1~65535)'
       }
     }
   },
   methods: {
-    getValue () {
-      // router.push('/myHome/mySystem')
-    },
-    save () {
-      this.readIniFile()
+    async save () {
       if (confirm('设备重启生效是否继续')) {
-        //
+        const UART4 = [...this.SelectArr, this.SelectProp[0], this.ModbusTCP, this.inputBaudrate, this.inputPORT]
+        const res = await http.post('/serialPost4', { UART4 })
+        console.log(res)
+      }
+    },
+    fetchData () {
+      http.get('/serialPort4').then(res => {
+        console.log(res.data.UART4)
+        Object.keys(res.data.UART4).forEach((item) => {
+          this.SelectArr.forEach((item2) => {
+            if (item === item2.label) {
+              console.log(item2)
+              item2.selected = res.data.UART4[item]
+            }
+          })
+          this.SelectProp.forEach((item2) => {
+            if (item === item2.label && item === 'Service') {
+              this.SelectProp[0].selected = res.data.UART4[item]
+            }
+            if (item2.label === 'ModbusTCP') {
+              this.ModbusTCP.selected = res.data.UART4[item]
+              if (res.data.UART4[item] === 'NO') {
+                this.SelectProp[1].selected = 'None'
+              } else if (res.data.UART4[item] === 'OFF') {
+                this.SelectProp[1].selected = 'None'
+              }
+            }
+          })
+          if (item === this.inputBaudrate.label) {
+            this.inputBaudrate.selected = res.data.UART4[item]
+          }
+          if (item === this.inputPORT.label) {
+            this.inputPORT.selected = res.data.UART4[item]
+          }
+        })
+      })
+    },
+    onCountryChange () {
+      if (this.SelectProp[0].selected === 'TCPServer') {
+        this.SelectProp[1].value = ['None', 'ModbusTCP']
+        this.ModbusTCP.selected = 'ON'
+      } else if (this.SelectProp[0].selected === 'Websocket') {
+        this.SelectProp[1].value = ['None']
+        this.ModbusTCP.selected = 'OFF'
       }
     }
-  },
-  watch: {
   }
 }
 </script>

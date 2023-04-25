@@ -1,7 +1,10 @@
 const { defineConfig } = require('@vue/cli-service')
+// const nodeExternals = require('webpack-node-externals')
 module.exports = defineConfig({
   transpileDependencies: true
 })
+
+// webpack < 5
 
 module.exports = {
   chainWebpack: (config) => {
@@ -19,8 +22,9 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'http://localhost:3002',
         changeOrigin: true,
+        ws: true,
         pathRewrite: {
           '^/api': '' // 将/api重写为空字符串
         }

@@ -16,7 +16,7 @@
         <span><input type="text" class="inputWidth" /> 分钟无数据时重启</span>
         <button class="absolute">保存</button>
       </p> -->
-      <button class="btn btn1">重启设备</button>
+      <button class="btn btn1" @click="pushLogin">重启设备</button>
       <button class="btn btn1" @click="reset">恢复出厂</button>
       <!-- <button class="btn">时间校准</button> -->
     </div>
@@ -24,35 +24,55 @@
 </template>
 
 <script>
-import config from '@/config/sysinfo.conf'
+// import config from '@/config/sysinfo.conf'
 import getCurrentTime from '@/utils/getTime'
 import axios from 'axios'
+import router from '@/router'
 export default {
   data () {
     return {
-      propArr: config,
+      propArr: [
+        { prop: '型号', value: '', label: 'Model' },
+        { prop: '系统版本', value: '', label: 'Version' },
+        { prop: '内核版本', value: 'Linux ', label: 'Kernel' },
+        { prop: '设备ID', value: '', label: 'Serial' },
+        { prop: '以太网MAC', value: '', label: 'LanMAC' },
+        { prop: '无线网MAC', value: '1', label: 'WifiMAC' }
+      ],
       RTCTime: { prop: 'RTC时间', value: getCurrentTime(), label: '', btn: '时间校准' }
     }
+  },
+  created () {
+    this.fetchData()
   },
   mounted () {
     setInterval(() => {
       this.RTCTime.value = getCurrentTime()
     }, 1000)
-    this.fetchData()
   },
   methods: {
     checkTime () {
-      // this.getCurrentTime()
+      // getCurrentTime()
       // alert('校准成功')
     },
     fetchData () {
       // const xhr = new XMLHttpRequest()
-      // xhr.open('GET', '../../../src/user/local/bin/recovery.sh')
-      // xhr.onload = () => {
-      //   this.data = xhr.responseText
+      // xhr.open('GET', '../../../src/config/netconfig.conf', true) // 请求的URL地址
+      // xhr.responseType = 'text' // 返回类型为文本
+      // xhr.onload = function () {
+      //   if (xhr.status === 200) { // 成功
+      //     let iniData = xhr.responseText // 获取到的文本数据
+      //     // 处理中文字符
+      //     iniData = decodeURIComponent(escape(iniData))
+      //     // 其他处理逻辑...
+      //     console.log(iniData)
+      //   } else { // 失败
+      //     console.log('获取ini文件失败')
+      //   }
       // }
-      // xhr.send()
-
+      // // 解决跨域问题
+      // xhr.setRequestHeader('Access-Control-Allow-Origin', '*')
+      // xhr.send() // 发送请求
       // axios.get('../../../src/user/local/bin/recovery.sh').then(response => {
       // console.log(response.data)
       // const data = JSON.parse(response.data)
@@ -60,19 +80,31 @@ export default {
       // this.age = data.age
       // })
       // mySystem.vue
-      // axios.get('http://localhost:3000/api/data').then(response => {
-      //   console.log(response.data)
-      // })
-      axios.get('http://localhost:3000/api/run-script')
-        .then(result => console.log(result, 1))
-      // .then(response => response.text())
-        .catch(error => console.error(error))
-      // axios.get('http://localhost:3001/getData').then(response => {
-      //   console.log(response.data)
-      // })
+      axios.get('http://localhost:3000/mySystem').then(res => {
+        console.log(res.data.propArr)
+        Object.keys(res.data.propArr).forEach((item) => {
+          this.propArr.forEach((item2) => {
+            if (item === item2.label) {
+              item2.value = res.data.propArr[item]
+            }
+          })
+        })
+      })
+      // axios.post('http://localhost:3000/run-script')
+      //   .then(result => console.log(result, 1))
+      // // .then(response => response.text())
+      //   .catch(error => console.error(error))
+      // // axios.get('http://localhost:3001/getData').then(response => {
+      // //   console.log(response.data)
+      // // })
+    },
+    pushLogin () {
+      // this.fetchData()
+      router.push('/myLogin')
     },
     reset () {
-      this.fetchData()
+      // this.fetchData()
+      // router.push('/myLogin')
     }
   }
 }
