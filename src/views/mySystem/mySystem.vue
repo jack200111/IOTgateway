@@ -1,7 +1,7 @@
 <!-- 系统 -->
 <template>
   <div class="">
-    <h1>系统信息</h1>
+    <h1>系统消息</h1>
     <div class="content">
       <p v-for="(item, index) in propArr" :key="index">
         <span class="prop">{{ item.prop }}:</span>

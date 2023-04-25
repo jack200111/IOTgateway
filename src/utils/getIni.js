@@ -67,11 +67,13 @@ function jsonData (filePath, jsonData) {
     for (const key in jsonData) {
       for (let i = 0; i < jsonData[key].length; i++) {
         const element = jsonData[key][i]
-        if (Array.isArray(element.value)) {
-          iniData += `${element.label}=${element.value.join(',')}\n`
-        } else {
-          iniData += `${element.label}=${element.value}\n`
-        }
+        // 数组
+        // if (Array.isArray(element.value)) {
+        //   iniData += `${element.label}=${element.selected.join(',')}\n`
+        // } else {
+        // 下拉框用selected 输入框用value
+        iniData += `${element.label}=${element.selected || element.value}\n`
+        // }
       }
     }
   }

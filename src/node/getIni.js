@@ -106,7 +106,7 @@ app.post('/saveNetconfig', (req, res) => {
 // console.log(jsonData)
 app.post('/loginPost', (req, res) => {
   const reqData = req.body
-  console.log(reqData)
+  // console.log(reqData)
   jsonData(loginPath, req.body)
   res.json(reqData)
 })

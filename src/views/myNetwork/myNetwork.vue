@@ -80,9 +80,6 @@
 </template>
 
 <script>
-// import wifiConfig from '@/config/wificonfig.conf'
-import axios from 'axios'
-// import parseIni from '@/utils/getIni'
 import http from '@/utils/http'
 export default {
   data () {
@@ -133,21 +130,21 @@ export default {
         }
       ],
       InterSelectArr: {
-        selected: 'OFF',
         prop: 'IP类型',
+        selected: 'OFF',
         label: 'DHCP',
         value: ['OFF', 'ON']
       },
       NoInterSelectArr: {
-        selected: 'OFF',
         prop: 'IP类型',
+        selected: 'OFF',
         label: 'DHCP',
-        value: ['OFF']
+        value: ['OFF', 'ON']
       },
       NoInterCar: [
         {
           prop: 'SSID',
-          selected: [],
+          selected: '',
           label: 'SSID',
           value: []// ruien
         },
@@ -160,109 +157,78 @@ export default {
     }
   },
   methods: {
-    changeVal (e) {
-      console.log(e)
-    },
-    getValue () {
-      // router.push('/myHome/mySystem')
-      const xhr = new XMLHttpRequest()
-      xhr.open('GET', 'http://localhost:3000/src/tmp/iwscan.tmp')
-      xhr.onload = () => {
-        console.log(xhr.responseText)
-        this.data = xhr.responseText
-      }
-      xhr.send()
-    },
     async save () {
       if (confirm('设备重启生效是否继续')) {
         // 获取最终的数据格式
-        // axios.post('http://localhost:3000/saveNetconfig', this.inputInterArr).then(res => {
-        //   console.log(res)
-        // })
-        console.log(this.inputInterArr)
-        console.log(this.InterSelectArr)
+        // console.log(this.inputInterArr)
         const netconfig = [...this.inputInterArr, this.InterSelectArr]
         const wificonfig = [...this.inputNoInterCar, this.NoInterSelectArr, ...this.NoInterCar]
-        console.log({ wificonfig: netconfig })
-        const res = await http.post('/netconfigPost', { netconfig })
-        const res2 = await http.post('/wificonfigPath', { wificonfig })
-        console.log(res)
-        console.log(res2)
-        // console.log(this.inputNoInterCar)
-        // console.log(this.NoInterSelectArr)
-        // console.log(this.NoInterCar)
+        // 写入
+        await http.post('/netconfigPost', { netconfig })
+        await http.post('/wificonfigPath', { wificonfig })
       }
     },
     getScanResults () {
-      axios.get('http://localhost:3000/read_scan_results') // 发送GET请求
+      // 获取SSID
+      http.get('/read_scan_results') // 发送GET请求
         .then(response => {
-          // this.ssids = response.data.split('\n').filter(Boolean) // 将响应数据转换为数组并过滤掉空字符串
-          // console.log(response.data.split('\n').filter(Boolean))
-          // const ssidList = []
-          // console.log(response.data.split('\n'))
-          // const lines = response.data.split('\n')
-          // for (const line of lines) {
-          //   if (line.startsWith('SSID: ')) {
-          //     const ssid = line.slice(6) // 提取 SSID 数据
-          //     ssidList.push(ssid) // 添加到数组中
-          //   }
-          // }
-          // console.log(ssidList[0])
-          console.log(response.data.slice(6))
           this.NoInterCar[0].value = [response.data.slice(6)]
-          console.log(this.NoInterCar[0])
         })
         .catch(error => {
           console.log(error)
         })
     },
     fetchData () {
-      axios.get('http://localhost:3000/myNetwork').then(res => {
-        console.log(res.data.netconfig)
+      // 有线网卡
+      http.get('/myNetwork').then(res => {
+        // console.log(res.data.netconfig)
         Object.keys(res.data.netconfig).forEach((item) => {
+          // 输入项数组
           this.inputInterArr.forEach((item2) => {
             if (item === item2.label) {
-              console.log(item2)
               item2.value = res.data.netconfig[item]
             }
           })
+          // 动静态
           if (item === this.InterSelectArr.label) {
             if (this.InterSelectArr.label === 'DHCP') {
-              this.InterSelectArr.value = res.data.netconfig[item].split(',')
+              this.InterSelectArr.selected = res.data.netconfig[item]
             }
           }
         })
       })
-      axios.get('http://localhost:3000/wificonfig').then(res => {
-        console.log(res.data.wificonfig)
+      // 无线网卡
+      http.get('/wificonfig').then(res => {
+        // console.log(res.data.wificonfig)
         Object.keys(res.data.wificonfig).forEach((item) => {
+          // 输入项数组
           this.inputNoInterCar.forEach((item2) => {
             if (item === item2.label) {
-              console.log(item2)
               item2.value = res.data.wificonfig[item]
             }
           })
+          // 动静态
           if (item === this.NoInterSelectArr.label) {
-            if (this.NoInterSelectArr.label === 'DHCP') {
-              this.NoInterSelectArr.value = res.data.wificonfig[item].split(',')
-            }
+            this.NoInterSelectArr.selected = res.data.wificonfig[item]
           }
+          // 密码
           this.NoInterCar.forEach((item2) => {
-            if (item === item2.label) {
-              if (item2.label === 'Passwd') {
-                item2.value = res.data.wificonfig[item]
-              }
+            // if (item === item2.label) {
+            if (item2.label === 'Passwd') {
+              item2.value = res.data.wificonfig[item]
             }
+            // SSID
+            // if (item2.label === 'SSID') {
+            //   item2.value = res.data.wificonfig[item].split(',')
+            // }
+            // }
           })
         })
       })
-      // axios.get('http://localhost:3000/netconfig').then(res => {
-      //   console.log(res)
-      // })
     }
   },
   mounted () {
-    // console.log(parseIni)
+    // 请求数据
     this.fetchData()
   }
 }
