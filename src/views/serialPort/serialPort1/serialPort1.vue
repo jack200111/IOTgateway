@@ -3,15 +3,16 @@
   <div class="content">
     <h1>配置设置</h1>
     <div>
+      <!-- 波特率 -->
       <p>
         <span>{{ inputBaudrate.prop }}</span
         ><input type="text" v-model="inputBaudrate.selected" />
         <span class="unit">&nbsp;{{ inputBaudrate.slot }}</span>
       </p>
+      <!-- 输入框 -->
       <p v-for="(item, index) in SelectArr" :key="index">
         <span>{{ item.prop }}</span>
         <template>
-          <!-- :disabled="item.label !== 'TYPE'" -->
           <select class="select" v-model="item.selected" >
             <option
               v-for="(item2, index2) in item.value"
@@ -26,6 +27,7 @@
       </p>
       <div>
         <span>工作方式</span>
+        <!-- 工作方式 第一个下拉框 -->
         <div class="inlineBlockDiv">
           <select
             class="select selectMarginRight"
@@ -44,6 +46,7 @@
             >&nbsp;{{ SelectProp[0].slot }}</span
           >
         </div>
+        <!-- 工作方式 第二个下拉框 -->
         <div class="inlineBlockDiv">
           <select
             class="select selectMarginRight"
@@ -60,22 +63,19 @@
           <span class="unit">&nbsp;{{ SelectProp[1].slot }}</span>
         </div>
       </div>
+      <!-- 本地端口 -->
       <p>
         <span>{{ inputPORT.prop }}</span
         ><input type="text" class="smallInput" v-model="inputPORT.value" />
         <span class="unit">&nbsp;{{ inputPORT.slot }}</span>
       </p>
     </div>
-    <!-- <p>Database Baudrate: {{ config }}</p> -->
     <button @click="save" class="btn btn1">保存及应用</button>
   </div>
 </template>
 
 <script>
-// import IniParser from 'ini-parser'
-// import fs from 'fs'
 import http from '@/utils/http'
-// import configIni from '@/config/UART1.ini'
 export default {
   mounted () {
     this.fetchData()
@@ -149,32 +149,32 @@ export default {
     }
   },
   methods: {
-    getValue () {
-      // router.push('/myHome/mySystem')
-    },
     async save () {
       this.readIniFile()
       if (confirm('设备重启生效是否继续')) {
-        // this.updateIniFile()
         const UART1 = [...this.SelectArr, this.SelectProp[0], this.ModbusTCP, this.inputBaudrate, this.inputPORT]
+        // 写入
         const res = await http.post('/serialPort1', { UART1 })
         console.log(res)
       }
     },
     fetchData () {
       http.get('/serialPort1').then(res => {
-        console.log(res.data.UART1)
+        // console.log(res.data.UART1)
         Object.keys(res.data.UART1).forEach((item) => {
+          // 输入框
           this.SelectArr.forEach((item2) => {
             if (item === item2.label) {
-              console.log(item2)
               item2.selected = res.data.UART1[item]
             }
           })
+          // 工作方式
           this.SelectProp.forEach((item2) => {
+            // 第一个下拉框 Service
             if (item === item2.label && item === 'Service') {
               this.SelectProp[0].selected = res.data.UART1[item]
             }
+            // 第二个下拉框 Service
             if (item2.label === 'ModbusTCP') {
               this.ModbusTCP.selected = res.data.UART1[item]
               if (res.data.UART1[item] === 'NO') {
