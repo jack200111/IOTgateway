@@ -1,22 +1,20 @@
-<!-- 网络 -->
 <template>
-  <div class="content">
-    <h1>zabbix代理</h1>
-    <!-- 有线网卡 -->
+  <div class="">
+    <!-- zabbix代理 -->
     <div>
+      <h1 class="absolute">zabbix代理</h1>
       <p v-for="(item) in zabbixAgent" :key="item.prop">
         <span>{{item.prop}}</span><input type="text"  v-model="item.value" />
       </p>
-      <p>
-        <span>备注提示</span><textarea v-model="textArea.value"> </textarea>
+      <p class="tip">
+        <span class="tip_span">备注提示</span><textarea v-model="textArea.value"> </textarea>
       </p>
+      <button @click="save" class="btn btn1">保存及应用</button>
     </div>
-    <button @click="save" class="btn btn1">保存及应用</button>
   </div>
 </template>
 
 <script>
-// import toNetwork from '@/config/toNetwork.conf'
 import http from '@/utils/http'
 export default {
   created () {
@@ -24,8 +22,6 @@ export default {
   },
   data () {
     return {
-      // zabbixAgent: toNetwork.zabbixAgent,
-      // textArea: toNetwork.textArea
       zabbixAgent: [
         {
           prop: '设备名称',
@@ -46,31 +42,29 @@ export default {
       textArea: {
         prop: '备注提示',
         label: 'TEXTAREA',
-        value: '' // 10050
-      }// 串口需启用TCPServer+ModbusTCP
+        value: '' // 串口需启用TCPServer+ModbusTCP
+      }
     }
   },
   methods: {
-    getValue () {
-      // router.push('/myHome/mySystem')
-    },
     async save () {
       if (confirm('设备重启生效是否继续')) {
         const zabbixAgent = [...this.zabbixAgent, this.textArea]
-        console.log(zabbixAgent)
-        const res = await http.post('/zabbixAgentPost', { zabbixAgent })
-        console.log(res)
+        // console.log(zabbixAgent)
+        // 写入
+        await http.post('/zabbixAgentPost', { zabbixAgent })
       }
     },
     fetchData () {
+      // 请求数据
       http.get('/zabbixAgent').then(res => {
-        console.log(res.data.zabbixAgent)
         Object.keys(res.data.zabbixAgent).forEach((item) => {
           this.zabbixAgent.forEach((item2) => {
+            // 输入项
             if (item === item2.label) {
-              console.log(item2)
               item2.value = res.data.zabbixAgent[item]
             }
+            // 备注
             if (item === 'TEXTAREA') {
               this.textArea.value = res.data.zabbixAgent.TEXTAREA
             }
@@ -83,6 +77,19 @@ export default {
 </script>
 
 <style scoped lang="scss">
+// .absolute{
+//   position: absolute;
+//   left: 10px;
+// }
+.bg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-content: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 h1 {
   color: #0069d6;
   margin-bottom: 20px;
@@ -115,4 +122,16 @@ span {
       color: #fff;
       margin-right: 10px;
     }
+  .tip {
+    display: flex;
+      // .tip_span{
+      //   height: 40px;
+      //   display: inline-block;
+      //   line-height: 40px;
+      // }
+      textarea{
+        min-width: 180px;
+        min-height: 60px;
+      }
+  }
 </style>
