@@ -37,6 +37,20 @@ function jsonData (filePath, jsonData) {
   const data = jsonData[keyName]
   // 传过来的数据
   console.log(jsonData, 'jsonData')
+  if (keyName === 'sysinfo') {
+    iniData += `[${keyName}]\n`
+    data.forEach((item) => {
+      if (Array.isArray(item.value)) {
+        const val1 = item.value
+        item.value.splice(item.value.indexOf(item.selected), 1)
+        iniData += `${item.prop}=${item.label},${item.selected},${val1.join(
+          ','
+        )}\n`
+      } else {
+        iniData += `${item.prop}=${item.label},${item.value}\n`
+      }
+    })
+  }
 
   if (keyName === 'iniData') {
     for (const key in data) {
@@ -44,10 +58,25 @@ function jsonData (filePath, jsonData) {
       iniData += `[${key}]\nuser=${data[key].user}\npassword=${data[key].password}\nMD5=${data[key].MD5}\n`
     }
   }
+  // if (keyName === 'zabbixAgent') {
+  //   iniData += `[${keyName}]\n`
+  //   data.forEach((item) => {
+  //     iniData += `${item.label}=${item.value}\n`
+  //   })
+  // }
+
   if (keyName === 'zabbixAgent') {
     iniData += `[${keyName}]\n`
     data.forEach((item) => {
-      iniData += `${item.label}=${item.value}\n`
+      if (Array.isArray(item.value)) {
+        const val1 = item.value
+        item.value.splice(item.value.indexOf(item.selected), 1)
+        iniData += `${item.label}=${item.prop},${item.selected},${val1.join(
+          ','
+        )}\n`
+      } else {
+        iniData += `${item.label}=${item.prop},${item.value}\n`
+      }
     })
   }
 

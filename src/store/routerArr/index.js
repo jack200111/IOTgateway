@@ -6,7 +6,7 @@ export default {
         path: 'mySystem',
         name: 'mySystem',
         meta: {
-          title: '系统消息'
+          title: '系统信息'
         },
         component: () => import('@/views/mySystem/mySystem.vue')
       },

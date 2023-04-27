@@ -1,38 +1,80 @@
 <!-- 系统 -->
 <template>
   <div class="">
-    <h1>系统消息</h1>
+    <h1>系统信息</h1>
     <div class="content">
-      <p v-for="(item, index) in propArr" :key="index">
-        <span class="prop">{{ item.prop }}:</span>
-        <span class="prop-value">{{ item.value }}</span>
-      </p>
-      <p>
-        <span class="prop">RTCTime:</span>
+      <span v-for="(item, index) in sysinfo" :key="index">
+        <p v-if="item.type !== 'button'&&item.prop!=='RTC时间'">
+          <!-- 输入框 或文本 -->
+          <template v-if="item.type === 'text'">
+              <span class="prop">{{ item.prop }}:</span>
+              <span class="prop-value">{{ item.value }}</span>
+          </template>
+          <template v-if="item.type === 'input'">
+              <span class="prop">{{ item.prop }}:</span>
+              <input type="text" v-model="item.value"/>
+          </template>
+          <!-- 下拉框 -->
+          <template v-if="item.type === 'select'">
+            <span class="prop">{{ item.prop }}:</span>
+            <select class="select" v-model="item.selected">
+              <option
+                v-for="(item2, index2) in item.value"
+                :key="index2"
+                :value="item2"
+              >
+              <template v-if="item2==='ON' || item2==='OFF'">
+                {{ item2==='ON'?'动态':'静态' }}
+                </template>
+                <template v-else>
+                {{ item2}}
+                </template>
+              </option>
+            </select>
+          </template>
+        </p>
+      </span>
+
+      <!-- RTC时间 -->
+      <span v-for="(item,index) in sysinfo" :key="index+'1'">
+          <p v-if="item.prop==='RTC时间'">
+          <!-- 输入框 或文本 -->
+          <template v-if="item.type === 'text'">
+              <span class="prop">{{ item.prop }}:</span>
+              <span class="prop-value">{{ item.value }}</span>
+          </template>
+        </p>
+      </span>
+      <!-- 按钮 -->
+      <span v-for="item in sysinfo" :key="item.prop">
+        <template v-if="item.type === 'button'">
+          <button class="btn btn1" @click="pushLogin" v-if="item.prop==='重启设备'">{{ item.prop }}</button>
+          <button class="btn btn1" @click="reset" v-if="item.prop==='恢复出厂'">{{ item.prop }}</button>
+        </template>
+      </span>
+      <!-- 系统时间 -->
+      <!-- <p>
+        <span class="prop">RTC时间</span>
         <span class="prop-value">{{ RTCTime.value }}</span>
         <button class="absolute" @click="checkTime">{{ RTCTime.btn }}</button>
-      </p>
-      <button class="btn btn1" @click="pushLogin">重启设备</button>
-      <button class="btn btn1" @click="reset">恢复出厂</button>
+      </p> -->
+      <!-- 按钮 -->
+      <!-- <button class="btn btn1" @click="pushLogin">重启设备</button> -->
+      <!-- <button class="btn btn1" @click="reset">恢复出厂</button> -->
       <!-- <button class="btn">时间校准</button> -->
+      <!-- <button @click="save" class="btn btn1">保存及应用</button> -->
     </div>
   </div>
 </template>
 
 <script>
 import getCurrentTime from '@/utils/getTime'
-import axios from 'axios'
+import http from '@/utils/http'
 import router from '@/router'
 export default {
   data () {
     return {
-      propArr: [
-        { prop: '型号', value: '', label: 'Model' },
-        { prop: '系统版本', value: '', label: 'Version' },
-        { prop: '内核版本', value: 'Linux ', label: 'Kernel' },
-        { prop: '设备ID', value: '', label: 'Serial' },
-        { prop: '以太网MAC', value: '', label: 'LanMAC' },
-        { prop: '无线网MAC', value: '1', label: 'WifiMAC' }
+      sysinfo: [
       ],
       RTCTime: { prop: 'RTC时间', value: getCurrentTime(), label: '', btn: '时间校准' }
     }
@@ -46,25 +88,78 @@ export default {
     }, 1000)
   },
   methods: {
+    async save () {
+      if (confirm('设备重启生效是否继续')) {
+        // 获取最终的数据格式
+        // console.log(this.inputInterArr)
+        // 写入
+        await http.post('/systemPathPost', { sysinfo: this.sysinfo })
+      }
+    },
     fetchData () {
       // mySystem.vue
-      axios.get('http://localhost:3000/mySystem').then(res => {
-        // console.log(res.data.propArr)
-        Object.keys(res.data.propArr).forEach((item) => {
-          this.propArr.forEach((item2) => {
-            if (item === item2.label) {
-              item2.value = res.data.propArr[item]
-            }
-          })
+      // console.log(res.data.sysinfo)
+      // console.log(this.sysinfo)
+      // console.log(Object.keys(res.data.sysinfo))
+      http.get('/mySystem').then(res => {
+        // 对象数据
+        const data = res.data[Object.keys(res.data)]
+        // item:中文键名
+        Object.keys(data).forEach((item) => {
+          const value = data[item]
+          const valueArr = data[item].split(',')
+          if (value.split(',')[0] === 'text' || value.split(',')[0] === 'button') {
+            // 静态文本
+            // console.log(item, data[item].split(','))
+            // tip: valueArr[2] && valueArr[2]
+            this.sysinfo.push({ prop: item, value: valueArr[1], type: valueArr[0] })
+          } else if (value.split(',')[0] === 'select') {
+            // tip: valueArr[2] && valueArr[2]
+            console.log(valueArr.slice(2))
+            this.sysinfo.push({ prop: item, value: valueArr.slice(2), type: valueArr[0], selected: valueArr[1] })
+          } else if (value.split(',')[0] === 'input') {
+            // tip: valueArr[2] && valueArr[2]
+            this.sysinfo.push({ prop: item, value: valueArr[1], type: valueArr[0] })
+          }
+          // if (value.split(',').length > 2) {
+          //   this.sysinfo.push({ prop: item, value: value.split(',').splice(1), selected: value.split(',')[1], label: value.split(',')[0] })
+          // } else {
+          //   this.sysinfo.push({ prop: item, value: value.split(',').splice(1).join(''), label: value.split(',')[0] })
+          // }
+          // // 特殊的情况，只读
+          if (item === 'RTC时间') {
+            this.sysinfo.forEach((item2) => {
+              if (item2.prop === item) {
+                item2.value = getCurrentTime()
+              }
+            })
+          }
+        // console.log({ prop: item, value: value.split(','), selected: value.split(',')[0] })
+        // 如果不删除，只添加
+        // const arr = []
+        //   this.sysinfo.forEach((item2) => {
+        //     if (item === item2.prop) {
+        //       arr.push(item)
+        //       item2.value = res.data.sysinfo[item]
+        //     }
+        //   })
+        //   this.sysinfo.forEach((item2) => {
+        //     if (!arr.includes(item)) {
+        //       arr.push(item)
+        //       this.sysinfo.push({ prop: item, value: res.data.sysinfo[item] })
+        //     }
+        //   })
         })
       })
+      console.log(this.sysinfo)
     },
     pushLogin () {
       router.push('/myLogin')
     },
     reset () {
-      // this.fetchData()
-      // router.push('/myLogin')
+      http.get('/recoverySh').then(res => {
+        // console.log(res)
+      })
     },
     checkTime () {
       //
@@ -77,6 +172,13 @@ export default {
 h1 {
   color: #0069d6;
   // margin-bottom: 20px;
+}
+.select,
+input {
+  width: 180px;
+  height: 24px;
+  outline: none;
+  box-sizing: border-box;
 }
 .content {
   p {

@@ -1,7 +1,7 @@
 <template>
   <div class="bg">
     <div class="login">
-      <div class="title">登录</div>
+      <div class="title">密码修改</div>
       <div class="input">
         <p><span>原密码: </span><input type="password" v-model="oldPassword"/></p>
         <p><span>新密码: </span><input type="password" v-model="newPassword1"/></p>

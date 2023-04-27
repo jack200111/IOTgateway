@@ -9,7 +9,12 @@
         ><input type="text" v-model="inputBaudrate.selected" />
         <span class="unit">&nbsp;{{ inputBaudrate.slot }}</span>
       </p>
-      <!-- 输入框 -->
+      <p>
+        <span>{{ type.prop }}</span
+        ><input type="text" v-model="type.selected"  :disabled="type.label === 'TYPE'"/>
+        <span class="unit">&nbsp;{{ type.slot }}</span>
+      </p>
+      <!-- 下拉框 -->
       <p v-for="(item, index) in SelectArr" :key="index">
         <span>{{ item.prop }}</span>
         <template>
@@ -105,12 +110,6 @@ export default {
           value: ['1', '2']
         },
         {
-          prop: '当前串口模式',
-          label: 'TYPE',
-          selected: 'RS485',
-          value: ['RS485', 'RS232']
-        },
-        {
           prop: '流控模式',
           label: 'FlowControl',
           selected: 'NONE',
@@ -145,6 +144,12 @@ export default {
         label: 'PORT',
         selected: '1030',
         slot: '(1~65535)'
+      },
+      type: {
+        prop: '当前串口模式',
+        label: 'TYPE',
+        selected: 'RS485',
+        value: 'RS485'
       }
     }
   },
@@ -204,6 +209,9 @@ export default {
           }
           if (item === this.inputPORT.label) {
             this.inputPORT.value = res.data.UART1[item]
+          }
+          if (item === this.type.label) {
+            this.type.value = res.data.UART1[item]
           }
         })
       })

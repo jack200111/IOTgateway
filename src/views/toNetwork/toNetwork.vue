@@ -3,11 +3,26 @@
     <!-- zabbix代理 -->
     <div>
       <h1 class="absolute">zabbix代理</h1>
-      <p v-for="(item) in zabbixAgent" :key="item.prop">
-        <span>{{item.prop}}</span><input type="text"  v-model="item.value" />
-      </p>
-      <p class="tip">
-        <span class="tip_span">备注提示</span><textarea v-model="textArea.value"> </textarea>
+      <p v-for="(item, index) in zabbixAgent" :key="index" >
+        <!-- 输入框 或文本 -->
+        <template v-if="!item.selected">
+          <span class="">{{ item.prop }}:</span>
+          <span class="tip" v-if="item.prop==='备注提示'">{{ item.value }}</span>
+          <input type="text" v-model="item.value" v-else/>
+        </template>
+        <!-- 下拉框 -->
+        <template v-else>
+          <span class="prop">{{ item.prop }}:</span>
+          <select class="select" v-model="item.selected">
+            <option
+              v-for="(item2, index2) in item.value"
+              :key="index2"
+              :value="item2"
+            >
+              {{ item2}}
+            </option>
+          </select>
+        </template>
       </p>
       <button @click="save" class="btn btn1">保存及应用</button>
     </div>
@@ -16,71 +31,46 @@
 
 <script>
 import http from '@/utils/http'
+import myMixin from '@/mixin/getIniData'
 export default {
+  mixins: [myMixin],
   created () {
-    this.fetchData()
+    this.fetchData('zabbixAgent')
+    console.log(this.$route.meta.title)
   },
   data () {
     return {
-      zabbixAgent: [
-        {
-          prop: '设备名称',
-          value: '', // 172.16.128.14
-          label: 'HOSTNAME'
-        },
-        {
-          prop: '服务器地址',
-          label: 'SERVER',
-          value: '' // 172.16.128.13
-        },
-        {
-          prop: '服务端口',
-          label: 'PORT',
-          value: '' // 10050
-        }
-      ],
-      textArea: {
-        prop: '备注提示',
-        label: 'TEXTAREA',
-        value: '' // 串口需启用TCPServer+ModbusTCP
-      }
+      zabbixAgent: []
     }
   },
   methods: {
     async save () {
       if (confirm('设备重启生效是否继续')) {
-        const zabbixAgent = [...this.zabbixAgent, this.textArea]
-        // console.log(zabbixAgent)
         // 写入
+        const zabbixAgent = this.zabbixAgent
         await http.post('/zabbixAgentPost', { zabbixAgent })
       }
-    },
-    fetchData () {
-      // 请求数据
-      http.get('/zabbixAgent').then(res => {
-        Object.keys(res.data.zabbixAgent).forEach((item) => {
-          this.zabbixAgent.forEach((item2) => {
-            // 输入项
-            if (item === item2.label) {
-              item2.value = res.data.zabbixAgent[item]
-            }
-            // 备注
-            if (item === 'TEXTAREA') {
-              this.textArea.value = res.data.zabbixAgent.TEXTAREA
-            }
-          })
-        })
-      })
     }
+    // fetchData () {
+    //   // 请求数据
+    //   const val = 'zabbixAgent'
+    //   // http.get('/zabbixAgent').then(res => {
+    //   //   Object.keys(res.data[val]).forEach((item) => {
+    //   //     const value = res.data[val][item]
+    //   //     // 下拉框
+    //   //     if (value.split(',').length > 2) {
+    //   //       this[val].push({ prop: value.split(',')[0], value: value.split(',').splice(1), selected: value.split(',')[1], label: item })
+    //   //     } else { // 输入框
+    //   //       this[val].push({ prop: value.split(',')[0], value: value.split(',').splice(1).join(''), label: item })
+    //   //     }
+    //   //   })
+    //   // })
+    // }
   }
 }
 </script>
 
 <style scoped lang="scss">
-// .absolute{
-//   position: absolute;
-//   left: 10px;
-// }
 .bg {
   position: relative;
   width: 100%;
@@ -94,9 +84,6 @@ h1 {
   color: #0069d6;
   margin-bottom: 20px;
 }
-// .content {
-//   padding: 20px;
-// }
 .select,
 input {
   width: 180px;
@@ -122,16 +109,7 @@ span {
       color: #fff;
       margin-right: 10px;
     }
-  .tip {
-    display: flex;
-      // .tip_span{
-      //   height: 40px;
-      //   display: inline-block;
-      //   line-height: 40px;
-      // }
-      textarea{
-        min-width: 180px;
-        min-height: 60px;
-      }
-  }
+    .tip {
+      white-space: nowrap;
+    }
 </style>
