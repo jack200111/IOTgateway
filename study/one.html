@@ -141,3 +141,36 @@ Passwd=21680186 -->
 
 node的目录放哪里?
 执行.sh效果录制!!
+
+<!-- 考虑下拉框备注情况 -->
+需要给select最后添加一个逗号
+
+<!-- if (keyName === 'sysinfo') {
+    iniData += `[${keyName}]\n`
+    data.forEach((item) => {
+      if (Array.isArray(item.value)) {
+        const val1 = item.value
+        item.value.splice(item.value.indexOf(item.selected), 1)
+        iniData += `${item.prop}=${item.prop},${item.selected},${val1.join(
+          ','
+        )}\n`
+      } else {
+        iniData += `${item.prop}=${item.prop},${item.value}\n`
+      }
+    })
+  }
+
+  if (keyName === 'zabbixAgent') {
+    iniData += `[${jsonData[title]}]\n`
+    data.forEach((item) => {
+      // if (Array.isArray(item.value)) {
+      //   const val1 = item.value
+      //   item.value.splice(item.value.indexOf(item.selected), 1)
+      //   iniData += `${item.prop}=${item.type},${item.selected},${val1.join(
+      //     ','
+      //   )}\n`
+      // } else {
+      iniData += `${item.prop}=${item.type},${item.value}\n`
+      // }
+    })
+  } -->

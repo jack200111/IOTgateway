@@ -1,0 +1,17 @@
+// 创建一个.db数据库
+CREATE DATABASE test_db;
+
+// 使用test_db数据库
+USE test_db;
+
+// 创建一个user表，用于存储用户信息
+CREATE TABLE user (
+    id INT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+// 插入测试数据
+INSERT INTO user (username, password) VALUES ('test', MD5('test'));
+
