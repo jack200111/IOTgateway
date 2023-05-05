@@ -1,0 +1,74 @@
+// 标题
+h1 {
+  color: #0069d6;
+  margin-bottom: 20px;
+}
+
+// 备注
+.unit {
+  color: #666;
+}
+// 下拉输入框
+.select,
+input {
+  width: 180px;
+  height: 24px;
+  outline: none;
+  box-sizing: border-box;
+}
+// 内容 行
+.content {
+  p {
+    // height: 42px;
+    line-height: 36px;
+    position: relative;
+    .prop {
+      width: 140px;
+      display: inline-block;
+    }
+  }
+  .inputWidth {
+    width: 80px;
+  }
+ 
+// 文本域
+  .radioDisplay {
+    display: flex;
+    flex-wrap: wrap;
+    .radio {
+      width: 30px;
+      height: 20px;
+    }
+    label {
+      margin-right: 10px;
+    }
+    .radioSpan {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .radioFlex {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+  }
+  .textarea {
+    width: 180px;
+    border: 1px solid #ccc;
+    border: none;
+    outline: none;
+    margin: 5px 0;
+  }
+}
+// 按钮
+.btn {
+  background-color: #6490aa;
+  color: #fff;
+  // width: 80px;
+  padding: 8px 15px;
+  border: none;
+  margin-top: 10px;
+}
+.btn1 {
+  margin-right: 10px;
+}
