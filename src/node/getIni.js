@@ -73,43 +73,14 @@ postData('/zabbixAgentPost', zabbixAgent)
 postData('/setPassword', setPassword)
 postData('/systemPathPost', '/tmp/iwscan.tmp')
 
-// app.get('/getTmp', (req, res) => {
-//   console.log(1)
-//   fs.readFile('/tmp/iwscan.tmp', 'utf8', (err, data) => {
-//     console.log(2)
-//     // 读取iwscan.tmp文件内容
-//     if (err) throw err
-//     res.send(data) // 发送响应，将文件内容作为响应体发送回客户端
-//   })
-// })
-
-// app.get('/recoverySh', (req, res) => {
-//   exec(recoverySh, (error, stdout, stderr) => {
-//     if (error) {
-//       // console.log(`exec error: ${error}`)
-//       res.status(500).send(error.message)
-//       return
-//     }
-//     // console.log(`stdout: ${stdout}`)
-//     // console.error(`error: ${stderr}`)
-//     res.send(stdout)
-//   })
-// })
-// function getShPath (value) {
-//   const recoverySh = '/user/local/bin/recovery.sh'
-//   return recoverySh
-// }
+// 请求sh
 app.post('/postSh', (req, res) => {
-  console.log(req.body)
-  console.log(req.body.value)
+  // console.log(req.body.value)
   exec(req.body.value, (error, stdout, stderr) => {
     if (error) {
-      // console.log(`exec error: ${error}`)
       res.status(500).send(error.message)
       return
     }
-    // console.log(`stdout: ${stdout}`)
-    // console.error(`error: ${stderr}`)
     res.send(stdout)
   })
 })
