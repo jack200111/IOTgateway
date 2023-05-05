@@ -4,10 +4,10 @@
       <div class="title">登录</div>
       <div class="input">
         <p><span>用户: </span><input type="text" v-model="user"/></p>
-        <p><span>密码: </span><input type="password" v-model="password"/></p>
+        <p><span>密码: </span><input type="password" v-model="password" @keyup.enter="routerLink"/></p>
       </div>
-      <button @click="routerLink" @keyup.enter="routerLink" class="btn btn1">登录</button>
-      <button @click="closeLogin" class="btn btn2">取消</button>
+      <button @click="routerLink"  class="btn btn1">登录</button>
+      <button @click="closeLogin"  class="btn btn2">取消</button>
     </div>
   </div>
 </template>

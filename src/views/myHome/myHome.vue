@@ -4,10 +4,10 @@
     <div class="top">
       <div class="title">瑞恩科技</div>
       <div class="middle">IOT网关</div>
-      <!-- <div class="btn">
-        <button class="btn1">English</button>
-        <button class="btn2" @click="pushLogin">重启</button>
-      </div> -->
+      <div class="button">
+        <!-- <button class="btn1">English</button> -->
+        <button class="button2" @click="pushLogin">退出</button>
+      </div>
     </div>
     <div class="flx">
       <div class="left">
@@ -73,6 +73,7 @@ export default {
     })
   },
   methods: {
+    // 改变高亮 跳转一级路由
     changeRoute (title) {
       // const oldIndex = this.ActiveIndex
       const index = this.routerArr.findIndex(
@@ -87,6 +88,7 @@ export default {
       }
       router.push('/myHome/' + this.routerArr[index].path)
     },
+    // 跳转子路由
     changeChildRoute (title) {
       const index = this.routerArr[this.ActiveIndex].children.findIndex(
         (item) => item.meta.title === title
@@ -94,6 +96,7 @@ export default {
       this.ActiveChildIndex = index
       router.push('/myHome/serialPort/' + this.routerArr[this.ActiveIndex].children[this.ActiveChildIndex].path)
     },
+    // 登录页
     pushLogin () {
       router.push('/myLogin')
     }
@@ -121,18 +124,18 @@ export default {
     font-size: 18px;
     padding-left: 30px;
   }
-  .btn {
-    width: 220px;
+  .button {
+    padding-right: 15px;
     button {
-      width: 100px;
+      width: 90px;
       height: 32px;
       background-color: #fff;
       color: #000;
       border: none;
     }
-    .btn1 {
-      margin-right: 10px;
-    }
+    // .button1 {
+    //   margin-right: 10px;
+    // }
   }
 }
 .flx {

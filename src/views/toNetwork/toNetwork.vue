@@ -1,31 +1,111 @@
+<!-- 系统 -->
 <template>
-  <div class="">
-    <!-- zabbix代理 -->
-    <div>
-      <h1 class="absolute">zabbix代理</h1>
-      <p v-for="(item, index) in zabbixAgent" :key="index" >
-        <!-- 输入框 或文本 -->
-        <template v-if="!item.selected">
-          <span class="">{{ item.prop }}:</span>
-          <span class="tip" v-if="item.prop==='备注提示'">{{ item.value }}</span>
-          <input type="text" v-model="item.value" v-else/>
-        </template>
-        <!-- 下拉框 -->
-        <template v-else>
-          <span class="prop">{{ item.prop }}:</span>
-          <select class="select" v-model="item.selected">
-            <option
-              v-for="(item2, index2) in item.value"
-              :key="index2"
-              :value="item2"
-            >
-              {{ item2}}
-            </option>
-          </select>
-        </template>
-      </p>
-      <button @click="save" class="btn btn1">保存及应用</button>
-    </div>
+  <div>
+    <h1>{{ title }}</h1>
+        <div class="content">
+          <span v-for="(item, index) in zabbixAgent" :key="index+101">
+            <p v-if="item.type !== 'button' && item.prop === 'IP类型'">
+              <!-- 下拉框 -->
+              <template v-if="item.type === 'select'">
+                <span class="prop">{{ item.prop }}:</span>
+                <select class="select" v-model="item.selected">
+                  <option
+                    v-for="(item2, index2) in item.value"
+                    :key="index2"
+                    :value="item2"
+                  >
+                    <template v-if="item2 === 'ON' || item2 === 'OFF'">
+                      {{ item2 === 'ON' ? '动态' : '静态' }}
+                    </template>
+                    <template v-else>
+                      {{ item2 }}
+                    </template>
+                  </option>
+                </select>
+              </template>
+            </p>
+          </span>
+          <span v-for="(item, index) in zabbixAgent" :key="index">
+            <p v-if="item.type !== 'button' && item.prop !== 'IP类型'">
+              <!-- 文本 -->
+              <template v-if="item.type === 'text'">
+                <span class="prop">{{ item.prop }}:</span>
+                <span class="prop-value">{{ item.value }}</span>
+                <span class="unit">&nbsp;{{ item.slot }}</span>
+              </template>
+              <!-- 输入框 -->
+              <template v-if="item.type === 'input'">
+                <span class="prop">{{ item.prop }}:</span>
+                <input type="text" v-model="item.value" />
+                <span class="unit">&nbsp;{{ item.slot }}</span>
+              </template>
+              <!-- 下拉框 -->
+              <template v-if="item.type === 'select'">
+                <span class="prop">{{ item.prop }}:</span>
+                <select class="select" v-model="item.selected">
+                  <option
+                    v-for="(item2, index2) in item.value"
+                    :key="index2"
+                    :value="item2"
+                  >
+                    <template v-if="item2 === 'ON' || item2 === 'OFF'">
+                      {{ item2 === 'ON' ? '动态' : '静态' }}
+                    </template>
+                    <template v-else>
+                      {{ item2 }}
+                    </template>
+                  </option>
+                </select>
+              </template>
+              <!-- 单选框 -->
+              <span v-if="item.type === 'radio'" class="radioDisplay">
+                <span class="prop">{{ item.prop }}:</span>
+                <span class="radioSpan">
+                  <span
+                    v-for="item2 in item.value"
+                    :key="item2"
+                    class="radioFlex"
+                  >
+                    <input
+                      class="radio"
+                      type="radio"
+                      :value="item2"
+                      v-model="item.selected"
+                    />
+                    <label>{{ item2 }}</label>
+                  </span>
+                </span>
+              </span>
+              <!-- 复选框 -->
+              <span v-if="item.type === 'checkbox'" class="radioDisplay">
+                <span class="prop">{{ item.prop }}:</span>
+                <span class="radioFlex">
+                  <input class="radio" type="checkbox" v-model="item.value" />
+                </span>
+                <!-- 可删 -->
+                <span class="unit">&nbsp;{{ item.slot }}</span>
+              </span>
+              <!-- 文本域 -->
+              <span v-if="item.type === 'textarea'" class="radioDisplay">
+                <span class="prop">{{ item.prop }}:</span>
+                <textarea
+                  v-model="item.value"
+                  class="textarea"
+                  placeholder="请输入"
+                />
+                <span class="unit">&nbsp;{{ item.slot }}</span>
+              </span>
+            </p>
+          </span>
+        </div>
+    <!-- 按钮 -->
+    <span v-for="item in zabbixAgent" :key="item.prop">
+      <template v-if="item.type === 'button'">
+        <button class="btn btn1" @click="getSh(item.value)">
+          {{ item.prop }}
+        </button>
+      </template>
+    </span>
   </div>
 </template>
 
@@ -34,82 +114,115 @@ import http from '@/utils/http'
 import myMixin from '@/mixin/getIniData'
 export default {
   mixins: [myMixin],
-  created () {
-    this.fetchData('zabbixAgent')
-    console.log(this.$route.meta.title)
-  },
   data () {
     return {
+      title: '',
       zabbixAgent: []
     }
   },
+  mounted () {
+    this.fetchData('zabbixAgent')
+  },
   methods: {
+    getSh (value) {
+      this.save()
+      http.post('/postSh', { value }).then(res => {
+      })
+    },
     async save () {
       if (confirm('设备重启生效是否继续')) {
+        // 获取最终的数据格式
+        // console.log(this.inputInterArr)
         // 写入
-        const zabbixAgent = this.zabbixAgent
-        await http.post('/zabbixAgentPost', { zabbixAgent })
+        await http.post('/zabbixAgentPost', { zabbixAgent: this.zabbixAgent, title: this.title })
       }
     }
-    // fetchData () {
-    //   // 请求数据
-    //   const val = 'zabbixAgent'
-    //   // http.get('/zabbixAgent').then(res => {
-    //   //   Object.keys(res.data[val]).forEach((item) => {
-    //   //     const value = res.data[val][item]
-    //   //     // 下拉框
-    //   //     if (value.split(',').length > 2) {
-    //   //       this[val].push({ prop: value.split(',')[0], value: value.split(',').splice(1), selected: value.split(',')[1], label: item })
-    //   //     } else { // 输入框
-    //   //       this[val].push({ prop: value.split(',')[0], value: value.split(',').splice(1).join(''), label: item })
-    //   //     }
-    //   //   })
-    //   // })
-    // }
   }
 }
 </script>
 
 <style scoped lang="scss">
-.bg {
-  position: relative;
-  width: 100%;
-  height: 100%;
+// h1 {
+//   color: #0069d6;
+// }
+// .select,
+// input {
+//   width: 180px;
+//   height: 24px;
+//   outline: none;
+//   box-sizing: border-box;
+// }
+.display {
   display: flex;
-  align-content: center;
-  flex-wrap: wrap;
-  justify-content: center;
 }
-h1 {
-  color: #0069d6;
-  margin-bottom: 20px;
+.left {
+  margin-right: 80px;
 }
-.select,
-input {
-  width: 180px;
-  height: 24px;
-  outline: none;
-  box-sizing: border-box;
-}
-p {
-  margin-bottom: 10px;
-}
-span {
-  width: 140px;
-  display: inline-block;
-}
+// .content {
+//   p {
+//     // height: 42px;
+//     line-height: 48px;
+//     position: relative;
+//     .prop {
+//       width: 140px;
+//       display: inline-block;
+//     }
+//     .absolute {
+//       position: absolute;
+//       left: 420px;
+//       width: 65px;
+//       top: 12px;
+//       height: 24px;
+//     }
+//   }
+//   .inputWidth {
+//     width: 80px;
+//   }
 
- .btn{
-      margin-top: 10px;
-      padding:8px 16px;
-      border: none;
-    }
-    .btn1{
-      background-color: #6490aa;
-      color: #fff;
-      margin-right: 10px;
-    }
-    .tip {
-      white-space: nowrap;
-    }
+//   // .unit {
+//   //   color: #666;
+//   // }
+
+//   .radioDisplay {
+//     display: flex;
+//     flex-wrap: wrap;
+//     .radio {
+//       width: 30px;
+//       height: 20px;
+//     }
+//     label {
+//       margin-right: 10px;
+//     }
+//     .radioSpan {
+//       display: flex;
+//       flex-wrap: wrap;
+//     }
+//     .radioFlex {
+//       display: flex;
+//       flex-wrap: wrap;
+//       align-items: center;
+//     }
+//   }
+//   .textarea {
+//     width: 180px;
+//     // height: 200px;
+//     // padding: 10px;
+//     border: 1px solid #ccc;
+//     // font-size: 16px;
+//     border: none;
+//     outline: none;
+//     margin: 5px 0;
+//   }
+// }
+//  .btn {
+//     background-color: #6490aa;
+//     color: #fff;
+//     // width: 80px;
+//     padding: 8px 15px;
+//     border: none;
+//     margin-top: 10px;
+//   }
+//   .btn1 {
+//     margin-right: 10px;
+//   }
 </style>

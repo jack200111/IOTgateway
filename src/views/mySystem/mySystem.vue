@@ -3,16 +3,19 @@
   <div class="">
     <h1>系统信息</h1>
     <div class="content">
-      <span v-for="(item, index) in sysinfo" :key="index">
+      <span v-for="(item, index) in mySystem" :key="index">
         <p v-if="item.type !== 'button'&&item.prop!=='RTC时间'">
-          <!-- 输入框 或文本 -->
+          <!-- 文本 -->
           <template v-if="item.type === 'text'">
               <span class="prop">{{ item.prop }}:</span>
               <span class="prop-value">{{ item.value }}</span>
+              <span class="unit">&nbsp;{{ item.slot }}</span>
           </template>
+          <!-- 输入框 -->
           <template v-if="item.type === 'input'">
               <span class="prop">{{ item.prop }}:</span>
               <input type="text" v-model="item.value"/>
+              <span class="unit">&nbsp;{{ item.slot }}</span>
           </template>
           <!-- 下拉框 -->
           <template v-if="item.type === 'select'">
@@ -32,11 +35,36 @@
               </option>
             </select>
           </template>
+          <!-- 单选框 -->
+          <span v-if="item.type === 'radio'" class="radioDisplay">
+            <span class="prop">{{ item.prop }}:</span>
+            <span class="radioSpan">
+              <span v-for="item2 in item.value" :key="item2" class="radioFlex">
+                <input class="radio" type="radio" :value="item2" v-model="item.selected">
+                <label >{{ item2 }}</label>
+              </span>
+            </span>
+          </span>
+          <!-- 复选框 -->
+          <span v-if="item.type === 'checkbox'" class="radioDisplay">
+            <span class="prop">{{ item.prop }}:</span>
+            <span class="radioFlex">
+              <input class="radio" type="checkbox"  v-model="item.value">
+            </span>
+            <!-- 可删 -->
+            <span class="unit">&nbsp;{{ item.slot }}</span>
+          </span>
+          <!-- 文本域 -->
+          <span v-if="item.type === 'textarea'" class="radioDisplay">
+              <span class="prop">{{ item.prop }}:</span>
+              <textarea  v-model="item.value" class="textarea" placeholder="请输入"/>
+              <span class="unit">&nbsp;{{ item.slot }}</span>
+          </span>
         </p>
       </span>
 
       <!-- RTC时间 -->
-      <span v-for="(item,index) in sysinfo" :key="index+'1'">
+      <span v-for="(item,index) in mySystem" :key="index+101">
           <p v-if="item.prop==='RTC时间'">
           <!-- 输入框 或文本 -->
           <template v-if="item.type === 'text'">
@@ -46,140 +74,42 @@
         </p>
       </span>
       <!-- 按钮 -->
-      <span v-for="item in sysinfo" :key="item.prop">
+      <span v-for="item in mySystem" :key="item.prop">
         <template v-if="item.type === 'button'">
-          <button class="btn btn1" @click="pushLogin" v-if="item.prop==='重启设备'">{{ item.prop }}</button>
-          <button class="btn btn1" @click="reset" v-if="item.prop==='恢复出厂'">{{ item.prop }}</button>
+          <button class="btn btn1" @click="getSh(item.value)" >{{ item.prop }}</button>
         </template>
       </span>
-      <!-- 系统时间 -->
-      <!-- <p>
-        <span class="prop">RTC时间</span>
-        <span class="prop-value">{{ RTCTime.value }}</span>
-        <button class="absolute" @click="checkTime">{{ RTCTime.btn }}</button>
-      </p> -->
-      <!-- 按钮 -->
-      <!-- <button class="btn btn1" @click="pushLogin">重启设备</button> -->
-      <!-- <button class="btn btn1" @click="reset">恢复出厂</button> -->
-      <!-- <button class="btn">时间校准</button> -->
-      <!-- <button @click="save" class="btn btn1">保存及应用</button> -->
     </div>
   </div>
 </template>
 
 <script>
 import getCurrentTime from '@/utils/getTime'
-import http from '@/utils/http'
-import router from '@/router'
+import myMixin from '@/mixin/getIniData'
 export default {
+  mixins: [myMixin],
   data () {
     return {
-      sysinfo: [
-      ],
-      RTCTime: { prop: 'RTC时间', value: getCurrentTime(), label: '', btn: '时间校准' }
+      mySystem: [
+      ]
     }
   },
-  created () {
-    this.fetchData()
-  },
   mounted () {
+    this.fetchData('mySystem')
     setInterval(() => {
-      this.RTCTime.value = getCurrentTime()
+      this.mySystem.forEach(item => {
+        if (item.prop === 'RTC时间') {
+          item.value = getCurrentTime()
+        }
+      })
     }, 1000)
   },
   methods: {
-    async save () {
-      if (confirm('设备重启生效是否继续')) {
-        // 获取最终的数据格式
-        // console.log(this.inputInterArr)
-        // 写入
-        await http.post('/systemPathPost', { sysinfo: this.sysinfo })
-      }
-    },
-    fetchData () {
-      // mySystem.vue
-      // console.log(res.data.sysinfo)
-      // console.log(this.sysinfo)
-      // console.log(Object.keys(res.data.sysinfo))
-      http.get('/mySystem').then(res => {
-        // 对象数据
-        const data = res.data[Object.keys(res.data)]
-        // item:中文键名
-        Object.keys(data).forEach((item) => {
-          const value = data[item]
-          const valueArr = data[item].split(',')
-          if (value.split(',')[0] === 'text' || value.split(',')[0] === 'button') {
-            // 静态文本
-            // console.log(item, data[item].split(','))
-            // tip: valueArr[2] && valueArr[2]
-            this.sysinfo.push({ prop: item, value: valueArr[1], type: valueArr[0] })
-          } else if (value.split(',')[0] === 'select') {
-            // tip: valueArr[2] && valueArr[2]
-            console.log(valueArr.slice(2))
-            this.sysinfo.push({ prop: item, value: valueArr.slice(2), type: valueArr[0], selected: valueArr[1] })
-          } else if (value.split(',')[0] === 'input') {
-            // tip: valueArr[2] && valueArr[2]
-            this.sysinfo.push({ prop: item, value: valueArr[1], type: valueArr[0] })
-          }
-          // if (value.split(',').length > 2) {
-          //   this.sysinfo.push({ prop: item, value: value.split(',').splice(1), selected: value.split(',')[1], label: value.split(',')[0] })
-          // } else {
-          //   this.sysinfo.push({ prop: item, value: value.split(',').splice(1).join(''), label: value.split(',')[0] })
-          // }
-          // // 特殊的情况，只读
-          if (item === 'RTC时间') {
-            this.sysinfo.forEach((item2) => {
-              if (item2.prop === item) {
-                item2.value = getCurrentTime()
-              }
-            })
-          }
-        // console.log({ prop: item, value: value.split(','), selected: value.split(',')[0] })
-        // 如果不删除，只添加
-        // const arr = []
-        //   this.sysinfo.forEach((item2) => {
-        //     if (item === item2.prop) {
-        //       arr.push(item)
-        //       item2.value = res.data.sysinfo[item]
-        //     }
-        //   })
-        //   this.sysinfo.forEach((item2) => {
-        //     if (!arr.includes(item)) {
-        //       arr.push(item)
-        //       this.sysinfo.push({ prop: item, value: res.data.sysinfo[item] })
-        //     }
-        //   })
-        })
-      })
-      console.log(this.sysinfo)
-    },
-    pushLogin () {
-      router.push('/myLogin')
-    },
-    reset () {
-      http.get('/recoverySh').then(res => {
-        // console.log(res)
-      })
-    },
-    checkTime () {
-      //
-    }
   }
 }
 </script>
 
 <style scoped lang="scss">
-h1 {
-  color: #0069d6;
-  // margin-bottom: 20px;
-}
-.select,
-input {
-  width: 180px;
-  height: 24px;
-  outline: none;
-  box-sizing: border-box;
-}
 .content {
   p {
     width: 900px;
@@ -190,13 +120,6 @@ input {
     .prop {
       width: 240px;
       display: inline-block;
-    }
-    .absolute{
-      position: absolute;
-      left: 420px;
-      width: 65px;
-      top: 12px;
-      height: 24px;
     }
   }
   .inputWidth {
@@ -209,9 +132,6 @@ input {
     padding:8px;
     border: none;
     margin-top: 10px;
-  }
-  .btn1{
-    margin-right: 10px;
   }
 }
 </style>
