@@ -15,17 +15,18 @@ const bodyParser = require('body-parser')
 // 解决JSON
 app.use(bodyParser.json())
 
-const systemPath = '/config/sysinfo.conf'
-const loginPath = '/config/login.ini'
-const networkPath = '/config/netconfig.conf'
-const wificonfigPath = '/config/wificonfig.conf'
-const serialPort1 = '/config/uart1.ini'
-const serialPort2 = '/config/uart2.ini'
-const serialPort3 = '/config/uart3.ini'
-const serialPort4 = '/config/uart4.ini'
+const sysinfo = '/config/sysinfo.conf'
+const login = '/config/login.ini'
+const netconfig = '/config/netconfig.conf'
+const wificonfig = '/config/wificonfig.conf'
+const uart1 = '/config/uart1.ini'
+const uart2 = '/config/uart2.ini'
+const uart3 = '/config/uart3.ini'
+const uart4 = '/config/uart4.ini'
 const zabbixAgent = '/config/zabbix_agent.conf'
 const pathAll = '/config/pathAll.ini'
 const setPassword = '/config/setPassword.ini'
+const portAll = '/config/portAll.ini'
 app.use(cors())
 // 解析URL编码数据 qs库来解析
 app.use(express.urlencoded({ extended: true }))
@@ -40,17 +41,29 @@ function getData (getUrl, IniUrl) {
 
 // 定义接口
 getData('/pathAll', pathAll)
-getData('/login', loginPath)
-getData('/mySystem', systemPath)
-getData('/myNetwork', networkPath)
-getData('/wificonfig', wificonfigPath)
-getData('/serialPort1', serialPort1)
-getData('/serialPort2', serialPort2)
-getData('/serialPort3', serialPort3)
-getData('/serialPort4', serialPort4)
+// getData('/login', login)
+// getData('/sysinfo', sysinfo)
+// getData('/netconfig', netconfig)
+// getData('/wificonfig', wificonfig)
+// getData('/uart3', uart3)
+// getData('/uart2', uart2)
+// getData('/uart3', uart3)
+// getData('/uart4', uart4)
+// getData('/zabbixAgent', zabbixAgent)
+// getData('/uart4', uart4)
+// getData('/setPassword', setPassword)
+getData('/login', login)
+getData('/sysinfo', sysinfo)
+getData('/netconfig', netconfig)
+getData('/wificonfig', wificonfig)
+getData('/uart1', uart1)
+getData('/uart2', uart2)
+getData('/uart3', uart3)
+getData('/uart4', uart4)
 getData('/zabbixAgent', zabbixAgent)
-getData('/serialPort4', serialPort4)
 getData('/setPassword', setPassword)
+getData('/portAll', portAll)
+
 getData('/getTmp', '/tmp/iwscan.tmp')
 
 // 写入Ini方法
@@ -62,16 +75,26 @@ function postData (postUrl, IniUrl) {
     res.json(reqData)
   })
 }
-postData('/loginPost', loginPath)
-postData('/netconfigPost', networkPath)
-postData('/wificonfigPath', wificonfigPath)
-postData('/serialPost1', serialPort1)
-postData('/serialPost2', serialPort2)
-postData('/serialPost3', serialPort3)
-postData('/serialPost4', serialPort4)
-postData('/zabbixAgentPost', zabbixAgent)
+// postData('/login', login)
+// postData('/netconfig', netconfig)
+// postData('/wificonfig', wificonfig)
+// postData('/uart1', uart3)
+// postData('/uart2', uart2)
+// postData('/uart3', uart3)
+// postData('/uart4', uart4)
+// postData('/zabbixAgent', zabbixAgent)
+// postData('/setPassword', setPassword)
+postData('/login', login)
+postData('/netconfig', netconfig)
+postData('/wificonfig', wificonfig)
+postData('/uart1', uart1)
+postData('/uart2', uart2)
+postData('/uart3', uart3)
+postData('/uart4', uart4)
+postData('/zabbixAgent', zabbixAgent)
 postData('/setPassword', setPassword)
-postData('/systemPathPost', '/tmp/iwscan.tmp')
+
+postData('/sysinfoPost', '/tmp/iwscan.tmp')
 
 // 请求sh
 app.post('/postSh', (req, res) => {
@@ -84,6 +107,12 @@ app.post('/postSh', (req, res) => {
     res.send(stdout)
   })
 })
+app.post('/pathAll', (req, res) => {
+  const reqData = req.body
+  console.log(reqData)
+  // res.json(reqData)
+})
+
 // 启动服务器
 const port = 3000
 app.listen(port, () => {

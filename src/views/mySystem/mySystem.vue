@@ -3,7 +3,7 @@
   <div class="">
     <h1>系统信息</h1>
     <div class="content">
-      <span v-for="(item, index) in mySystem" :key="index">
+      <span v-for="(item, index) in sysinfo" :key="index">
         <p v-if="item.type !== 'button'&&item.prop!=='RTC时间'">
           <!-- 文本 -->
           <template v-if="item.type === 'text'">
@@ -64,7 +64,7 @@
       </span>
 
       <!-- RTC时间 -->
-      <span v-for="(item,index) in mySystem" :key="index+101">
+      <span v-for="(item,index) in sysinfo" :key="index+101">
           <p v-if="item.prop==='RTC时间'">
           <!-- 输入框 或文本 -->
           <template v-if="item.type === 'text'">
@@ -74,7 +74,7 @@
         </p>
       </span>
       <!-- 按钮 -->
-      <span v-for="item in mySystem" :key="item.prop">
+      <span v-for="item in sysinfo" :key="item.prop">
         <template v-if="item.type === 'button'">
           <button class="btn btn1" @click="getSh(item.value)" >{{ item.prop }}</button>
         </template>
@@ -90,14 +90,14 @@ export default {
   mixins: [myMixin],
   data () {
     return {
-      mySystem: [
+      sysinfo: [
       ]
     }
   },
   mounted () {
-    this.fetchData('mySystem')
+    this.fetchData('sysinfo')
     setInterval(() => {
-      this.mySystem.forEach(item => {
+      this.sysinfo.forEach(item => {
         if (item.prop === 'RTC时间') {
           item.value = getCurrentTime()
         }

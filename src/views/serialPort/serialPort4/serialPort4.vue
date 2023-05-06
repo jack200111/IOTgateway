@@ -3,7 +3,7 @@
   <div>
     <h1>{{ title }}</h1>
     <div class="content">
-      <span v-for="(item, index) in serialPort4" :key="index">
+      <span v-for="(item, index) in uart4" :key="index">
         <p v-if="item.type !== 'button' && item.prop !== '工作方式'">
           <!-- 文本 -->
           <template v-if="item.type === 'text'">
@@ -79,7 +79,7 @@
       </span>
     </div>
     <div class="content">
-      <span v-for="(item, index) in serialPort4" :key="index+101">
+      <span v-for="(item, index) in uart4" :key="index+101">
         <p v-if="item.type !== 'button' && item.prop === '工作方式'">
           <!-- 下拉框 -->
           <span>
@@ -136,21 +136,21 @@
       </span>
     </div>
     <div class="content">
-      <span v-for="(item, index) in serialPort4" :key="index">
+      <span v-for="(item, index) in uart4" :key="index">
         <p v-if="item.type !== 'button' && item.prop !== '工作方式'">
           <!-- 小输入框 -->
              <template v-if="item.type === 'smallInput'">
             <span class="prop">{{ item.prop }}:</span>
-            <input style="width:65px" type="text" v-model="item.value" />
+            <input style="width:65px" type="text" v-model="item.value" @change="changePort(item.value)"/>
             <span class="unit">&nbsp;{{ item.slot }}</span>
           </template>
         </p>
       </span>
     </div>
     <!-- 按钮 -->
-    <span v-for="item in serialPort4" :key="item.prop">
+    <span v-for="item in uart4" :key="item.prop">
       <template v-if="item.type === 'button'">
-        <button class="btn btn1" @click="getSh(item.value)">
+        <button class="btn btn1" @click="getSh2(item.value)">
           {{ item.prop }}
         </button>
         <span class="unit">&nbsp;{{ item.slot }}</span>
@@ -167,23 +167,17 @@ export default {
   data () {
     return {
       title: '',
-      serialPort4: []
+      uart4: [],
+      oldPort: '',
+      newPort: ''
     }
   },
   mounted () {
-    this.fetchData('serialPort4')
+    this.fetchData('uart4')
   },
   methods: {
     async save () {
-      await http.post('/serialPost4', { UART3: this.serialPort4, title: this.title })
-    },
-    onCountryChange (item) {
-      const valueArr = item.value
-      if (valueArr[0].selected === 'TCPServer') {
-        valueArr[1].value = ['None', 'ModbusTCP']
-      } else if (valueArr[0].selected === 'Websocket') {
-        valueArr[1].value = ['None']
-      }
+      await http.post('/uart4', { UART3: this.uart4, title: this.title })
     }
   }
 }

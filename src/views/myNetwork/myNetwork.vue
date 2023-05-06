@@ -5,7 +5,7 @@
       <div class="left">
         <h1>{{ title }}</h1>
         <div class="content">
-          <span v-for="(item, index) in myNetwork" :key="index+101">
+          <span v-for="(item, index) in netconfig" :key="index+101">
             <p v-if="item.type !== 'button' && item.prop === 'IP类型'">
               <!-- 下拉框 -->
               <template v-if="item.type === 'select'">
@@ -28,7 +28,7 @@
               </template>
             </p>
           </span>
-          <span v-for="(item, index) in myNetwork" :key="index">
+          <span v-for="(item, index) in netconfig" :key="index">
             <p v-if="item.type !== 'button' && item.prop !== 'IP类型'">
               <!-- 文本 -->
               <template v-if="item.type === 'text'">
@@ -210,7 +210,7 @@
       </div>
     </div>
     <!-- 按钮 -->
-    <span v-for="item in myNetwork" :key="item.prop">
+    <span v-for="item in netconfig" :key="item.prop">
       <template v-if="item.type === 'button'">
         <button class="btn btn1" @click="getSh(item.value, item)">
           {{ item.prop }}
@@ -230,22 +230,22 @@ export default {
     return {
       title: '',
       title2: '',
-      myNetwork: [],
+      netconfig: [],
       wificonfig: [],
       netconfigDisable: false,
       wificonfigDisable: false
     }
   },
   mounted () {
-    this.fetchData('myNetwork')
+    this.fetchData('netconfig')
     this.fetchData('wificonfig')
   },
   methods: {
     async save () {
       if (confirm('设备重启生效是否继续')) {
         // 写入
-        await http.post('/netconfigPost', { netconfig: this.myNetwork, title: this.title })
-        await http.post('/wificonfigPath', { wificonfig: this.wificonfig, title: this.title2 })
+        await http.post('/netconfig', { netconfig: this.netconfig, title: this.title })
+        await http.post('/wificonfig', { wificonfig: this.wificonfig, title: this.title2 })
       }
     },
     getSh (value, item) {

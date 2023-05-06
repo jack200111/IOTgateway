@@ -119,7 +119,7 @@ export default {
           }
         })
         // 写入请求
-        await http.post('/loginPost', { iniData: this.iniData })
+        await http.post('/login', { iniData: this.iniData })
         // 仓库密码修改
         this.$store.commit('changePassword', this.newPassword1)
         // 用于判断的原密码修改

@@ -3,16 +3,16 @@ export default {
   state: {
     routerArr: [
       {
-        path: 'mySystem',
-        name: 'mySystem',
+        path: 'sysinfo',
+        name: 'sysinfo',
         meta: {
           title: '系统信息'
         },
         component: () => import('@/views/mySystem/mySystem.vue')
       },
       {
-        path: 'myNetwork',
-        name: 'myNetwork',
+        path: 'netconfig',
+        name: 'netconfig',
         meta: {
           title: '网络设置'
         },
@@ -27,32 +27,32 @@ export default {
         component: () => import('@/views/serialPort/serialPort.vue'),
         children: [
           {
-            path: 'serialPort1',
-            name: 'serialPort1',
+            path: 'uart1',
+            name: 'uart1',
             meta: {
               title: '串口1'
             },
             component: () => import('@/views/serialPort/serialPort1/serialPort1.vue')
           },
           {
-            path: 'serialPort2',
-            name: 'serialPort2',
+            path: 'uart2',
+            name: 'uart2',
             meta: {
               title: '串口2'
             },
             component: () => import('@/views/serialPort/serialPort2/serialPort2.vue')
           },
           {
-            path: 'serialPort3',
-            name: 'serialPort3',
+            path: 'uart3',
+            name: 'uart3',
             meta: {
               title: '串口3'
             },
             component: () => import('@/views/serialPort/serialPort3/serialPort3.vue')
           },
           {
-            path: 'serialPort4',
-            name: 'serialPort4',
+            path: 'uart4',
+            name: 'uart4',
             meta: {
               title: '串口4'
             },
