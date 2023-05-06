@@ -96,7 +96,7 @@ export default {
       const arr = JSON.parse(localStorage.getItem('portArr'))
       console.log(this.oldPort, 'oldPort')
       console.log(this.newPort, 'newPort')
-      if (this.oldPort !== this.newPort && arr.includes(this.oldPort)) {
+      if (this.oldPort !== this.newPort && arr.includes(this.newPort)) {
         alert(this.newPort + '端口已经存在,请勿使用端口:' + arr.filter(item => item !== this.oldPort).join(','))
         return
       }

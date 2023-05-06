@@ -178,7 +178,8 @@ export default {
   methods: {
     // 保存串口
     async save () {
-      await http.post('/uart1', { uart1: this.uart1, title: this.title })
+      console.log('uart1')
+      await http.post('/uart1', { UART1: this.uart1, title: this.title })
     }
   }
 }
