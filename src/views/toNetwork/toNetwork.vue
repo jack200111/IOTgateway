@@ -3,9 +3,10 @@
   <div>
     <h1>{{ title }}</h1>
         <div class="content">
-          <span v-for="(item, index) in zabbixAgent" :key="index+101">
+          <!-- 顺序调整而已 -->
+          <!-- IP类型下拉框 -->
+          <!-- <span v-for="(item, index) in zabbixAgent" :key="index+101">
             <p v-if="item.type !== 'button' && item.prop === 'IP类型'">
-              <!-- 下拉框 -->
               <template v-if="item.type === 'select'">
                 <span class="prop">{{ item.prop }}:</span>
                 <select class="select" v-model="item.selected">
@@ -24,79 +25,8 @@
                 </select>
               </template>
             </p>
-          </span>
-          <span v-for="(item, index) in zabbixAgent" :key="index">
-            <p v-if="item.type !== 'button' && item.prop !== 'IP类型'">
-              <!-- 文本 -->
-              <template v-if="item.type === 'text'">
-                <span class="prop">{{ item.prop }}:</span>
-                <span class="prop-value">{{ item.value }}</span>
-                <span class="unit">&nbsp;{{ item.slot }}</span>
-              </template>
-              <!-- 输入框 -->
-              <template v-if="item.type === 'input'">
-                <span class="prop">{{ item.prop }}:</span>
-                <input type="text" v-model="item.value" />
-                <span class="unit">&nbsp;{{ item.slot }}</span>
-              </template>
-              <!-- 下拉框 -->
-              <template v-if="item.type === 'select'">
-                <span class="prop">{{ item.prop }}:</span>
-                <select class="select" v-model="item.selected">
-                  <option
-                    v-for="(item2, index2) in item.value"
-                    :key="index2"
-                    :value="item2"
-                  >
-                    <template v-if="item2 === 'ON' || item2 === 'OFF'">
-                      {{ item2 === 'ON' ? '动态' : '静态' }}
-                    </template>
-                    <template v-else>
-                      {{ item2 }}
-                    </template>
-                  </option>
-                </select>
-              </template>
-              <!-- 单选框 -->
-              <span v-if="item.type === 'radio'" class="radioDisplay">
-                <span class="prop">{{ item.prop }}:</span>
-                <span class="radioSpan">
-                  <span
-                    v-for="item2 in item.value"
-                    :key="item2"
-                    class="radioFlex"
-                  >
-                    <input
-                      class="radio"
-                      type="radio"
-                      :value="item2"
-                      v-model="item.selected"
-                    />
-                    <label>{{ item2 }}</label>
-                  </span>
-                </span>
-              </span>
-              <!-- 复选框 -->
-              <span v-if="item.type === 'checkbox'" class="radioDisplay">
-                <span class="prop">{{ item.prop }}:</span>
-                <span class="radioFlex">
-                  <input class="radio" type="checkbox" v-model="item.value" />
-                </span>
-                <!-- 可删 -->
-                <span class="unit">&nbsp;{{ item.slot }}</span>
-              </span>
-              <!-- 文本域 -->
-              <span v-if="item.type === 'textarea'" class="radioDisplay">
-                <span class="prop">{{ item.prop }}:</span>
-                <textarea
-                  v-model="item.value"
-                  class="textarea"
-                  placeholder="请输入"
-                />
-                <span class="unit">&nbsp;{{ item.slot }}</span>
-              </span>
-            </p>
-          </span>
+          </span> -->
+          <typeAll :typeArray="zabbixAgent" :title="title"></typeAll>
         </div>
     <!-- 按钮 -->
     <span v-for="item in zabbixAgent" :key="item.prop">
@@ -112,7 +42,11 @@
 <script>
 import http from '@/utils/http'
 import myMixin from '@/mixin/getIniData'
+import typeAll from '@/components/typeAll.vue'
 export default {
+  components: {
+    typeAll
+  },
   mixins: [myMixin],
   data () {
     return {

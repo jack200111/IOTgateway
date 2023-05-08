@@ -1,15 +1,16 @@
 <template>
   <div class="box">
-    <!-- <h1>myHome</h1> -->
+    <!-- header -->
     <div class="top">
       <div class="title">瑞恩科技</div>
       <div class="middle">IOT网关</div>
       <div class="button">
-        <!-- <button class="btn1">English</button> -->
         <button class="button2" @click="pushLogin">退出</button>
       </div>
     </div>
+    <!--  -->
     <div class="flx">
+      <!-- 左侧导航栏slide -->
       <div class="left">
         <ul>
           <li
@@ -32,6 +33,7 @@
           </li>
         </ul>
       </div>
+      <!-- 右侧内容content-->
       <div class="right">
         <router-view />
       </div>

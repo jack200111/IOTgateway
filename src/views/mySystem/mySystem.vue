@@ -1,7 +1,7 @@
 <!-- 系统 -->
 <template>
   <div class="">
-    <h1>系统信息</h1>
+    <h1>{{title}}</h1>
     <div class="content">
       <span v-for="(item, index) in sysinfo" :key="index">
         <p v-if="item.type !== 'button'&&item.prop!=='RTC时间'">
@@ -62,7 +62,6 @@
           </span>
         </p>
       </span>
-
       <!-- RTC时间 -->
       <span v-for="(item,index) in sysinfo" :key="index+101">
           <p v-if="item.prop==='RTC时间'">
@@ -73,12 +72,14 @@
           </template>
         </p>
       </span>
+      <typeAll :typeArray="sysinfo" :title="title" ifProp=""></typeAll>
       <!-- 按钮 -->
-      <span v-for="item in sysinfo" :key="item.prop">
+      <!-- <span v-for="item in sysinfo" :key="item.prop">
         <template v-if="item.type === 'button'">
           <button class="btn btn1" @click="getSh(item.value)" >{{ item.prop }}</button>
         </template>
-      </span>
+      </span> -->
+    <myButton :typeArray="sysinfo" @fn="getSh"></myButton>
     </div>
   </div>
 </template>
@@ -86,10 +87,17 @@
 <script>
 import getCurrentTime from '@/utils/getTime'
 import myMixin from '@/mixin/getIniData'
+import myButton from '@/components/button.vue'
+// import typeAll from '@/components/typeAll.vue'
 export default {
+  components: {
+    myButton
+    // typeAll
+  },
   mixins: [myMixin],
   data () {
     return {
+      title: '',
       sysinfo: [
       ]
     }
@@ -105,6 +113,8 @@ export default {
     }, 1000)
   },
   methods: {
+    save () {
+    }
   }
 }
 </script>

@@ -108,7 +108,6 @@ export default {
   float:right ;
   position: absolute;
   // z-index: -1;
-  // background-image: url('@/assets/image/瑞恩智慧物联IOT网关.jpg');
   background-image: url('@/assets/image/IOT.jpg');
   background-size: cover; /* 设置为 cover 或者 contain */
   background-position: center;
