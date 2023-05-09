@@ -154,4 +154,18 @@ export default {
 .left {
   margin-right: 80px;
 }
+
+  .myP{
+    p {
+        width: 900px;
+        border-bottom: 1px solid #ccc;
+        height: 42px;
+        line-height: 48px;
+        position: relative;
+        .prop {
+          width: 240px;
+          display: inline-block;
+        }
+      }
+  }
 </style>
