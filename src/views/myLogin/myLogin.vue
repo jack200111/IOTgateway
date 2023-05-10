@@ -1,7 +1,7 @@
 <template>
   <div class="bg" id="">
     <div class="login">
-      <div class="title">瑞恩智慧物联IOT网关</div>
+      <div class="title">XX智慧物联IOT网关</div>
       <!-- 账号 -->
       <p>
         <span><img class="icon" src="@/assets/image/user.png" alt=""></span>
@@ -108,7 +108,8 @@ export default {
   float:right ;
   position: absolute;
   // z-index: -1;
-  background-image: url('@/assets/image/IOT.jpg');
+  // background-image: url('@/assets/image/IOT.jpg');
+  background-image: url('@/assets/image/1683689877641.jpg');
   background-size: cover; /* 设置为 cover 或者 contain */
   background-position: center;
 }
@@ -166,6 +167,7 @@ export default {
           text-indent: 1em;
           font-size: 24px;
           color: #333333;
+          height: 60px;
         }
       }
     // }

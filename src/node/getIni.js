@@ -26,7 +26,6 @@ const uart4 = '/config/uart4.ini'
 const zabbixAgent = '/config/zabbix_agent.conf'
 const pathAll = '/config/pathAll.ini'
 const setPassword = '/config/setPassword.ini'
-// const portAll = '/config/portAll.ini'
 app.use(cors())
 // 解析URL编码数据 qs库来解析
 app.use(express.urlencoded({ extended: true }))
@@ -51,7 +50,6 @@ getData('/uart3', uart3)
 getData('/uart4', uart4)
 getData('/zabbixAgent', zabbixAgent)
 getData('/setPassword', setPassword)
-// getData('/portAll', portAll)
 
 getData('/getTmp', '/tmp/iwscan.tmp')
 
@@ -86,11 +84,6 @@ app.post('/postSh', (req, res) => {
     }
     res.send(stdout)
   })
-})
-app.post('/pathAll', (req, res) => {
-  const reqData = req.body
-  console.log(reqData)
-  // res.json(reqData)
 })
 
 // 启动服务器
