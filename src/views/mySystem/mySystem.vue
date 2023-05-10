@@ -5,8 +5,8 @@
     <div class="content">
       <typeAll  cssClass="myP" :typeArray="sysinfo" :title="title" ifProp="RTC时间"></typeAll>
       <!-- RTC时间 -->
-      <span v-for="(item,index) in sysinfo" :key="index+101">
-          <p v-if="item.prop==='RTC时间'">
+      <span cssClass="myP" v-for="(item,index) in sysinfo" :key="index+101">
+          <p v-if="item.prop==='RTC时间'" >
           <!-- 输入框 或文本 -->
           <template v-if="item.type === 'text'">
               <span class="prop">{{ item.prop }}:</span>
@@ -63,7 +63,16 @@ export default {
 <style scoped lang="scss">
 
 .content {
-
+  p{
+    width: 900px;
+    height: 42px;
+    line-height: 48px;
+    position: relative;
+    .prop {
+        width: 240px;
+        display: inline-block;
+      }
+  }
   .inputWidth {
     width: 80px;
   }

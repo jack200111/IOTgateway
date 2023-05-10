@@ -7,7 +7,7 @@
         <h1>{{ title }}</h1>
         <div class="content">
           <!-- 动静态 -->
-          <netOrWifi :typeArrayName="netconfig"></netOrWifi>
+          <netOrWifi :typeArrayName="netconfig" @fn="IsDisableFn"></netOrWifi>
           <typeAll
             :typeArray="netconfig"
             :title="title"
@@ -20,7 +20,7 @@
         <h1>{{ title2 }}</h1>
         <div class="content">
           <!-- 动静态 -->
-          <netOrWifi :typeArrayName="wificonfig"></netOrWifi>
+          <netOrWifi :typeArrayName="wificonfig" @fn="IsDisableFn2"></netOrWifi>
           <typeAll
             :typeArray="wificonfig"
             :title="title"
@@ -30,7 +30,7 @@
       </div>
     </div>
     <!-- 按钮 -->
-    <myButton :typeArray="netconfig" @fn="getSh"></myButton>
+    <myButton :typeArray="netconfig"></myButton>
   </div>
 </template>
 
@@ -53,7 +53,7 @@ export default {
       title2: '',
       netconfig: [],
       wificonfig: [],
-      netconfigDisable: false,
+      netconfigDisable: true,
       wificonfigDisable: false
     }
   },
@@ -104,13 +104,20 @@ export default {
       }
       http.post('/postSh', { value }).then((res) => {})
     },
-    IsDisable (item) {
-      console.log(item.selected)
+    IsDisableFn (item) {
       if (item.selected === 'ON') {
         // 动态 禁用
         this.netconfigDisable = true
       } else {
         this.netconfigDisable = false
+      }
+    },
+    IsDisableFn2 (item) {
+      if (item.selected === 'ON') {
+        // 动态 禁用
+        this.wificonfigDisable = true
+      } else {
+        this.wificonfigDisable = false
       }
     }
   }

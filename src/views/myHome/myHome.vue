@@ -2,7 +2,7 @@
   <div class="box">
     <!-- header -->
     <div class="top">
-      <div class="title">XXXX科技</div>
+      <div class="title">瑞恩科技</div>
       <div class="middle">IOT网关</div>
       <div class="button">
         <button class="button2" @click="pushLogin">退出</button>

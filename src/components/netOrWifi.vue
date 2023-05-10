@@ -9,7 +9,7 @@
           <select
             class="select"
             v-model="item.selected"
-            @change="IsDisable(item)"
+            @change="fn(item)"
           >
             <option
               v-for="(item2, index2) in item.value"
@@ -35,6 +35,11 @@
 export default {
   props: {
     typeArrayName: { type: Array, required: true }
+  },
+  methods: {
+    fn (item) {
+      this.$emit('fn', item)
+    }
   }
 }
 </script>
