@@ -85,12 +85,6 @@ app.post('/postSh', (req, res) => {
     res.send(stdout)
   })
 })
-app.post('/pathAll', (req, res) => {
-  const reqData = req.body
-  console.log(reqData)
-  // res.json(reqData)
-})
-
 // 启动服务器
 const port = 3000
 app.listen(port, () => {
