@@ -24,8 +24,8 @@ const uart2 = '/config/uart2.ini'
 const uart3 = '/config/uart3.ini'
 const uart4 = '/config/uart4.ini'
 const zabbixAgent = '/config/zabbix_agent.conf'
-const pathAll = '/config/pathAll.ini'
 const setPassword = '/config/setPassword.ini'
+const portAll = '/config/portAll.ini'
 app.use(cors())
 // 解析URL编码数据 qs库来解析
 app.use(express.urlencoded({ extended: true }))
@@ -39,7 +39,6 @@ function getData (getUrl, IniUrl) {
 }
 
 // 定义接口
-getData('/pathAll', pathAll)
 getData('/login', login)
 getData('/sysinfo', sysinfo)
 getData('/netconfig', netconfig)
@@ -50,6 +49,7 @@ getData('/uart3', uart3)
 getData('/uart4', uart4)
 getData('/zabbixAgent', zabbixAgent)
 getData('/setPassword', setPassword)
+getData('/portAll', portAll)
 
 getData('/getTmp', '/tmp/iwscan.tmp')
 
