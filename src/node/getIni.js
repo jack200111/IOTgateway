@@ -37,7 +37,8 @@ function getData (getUrl, IniUrl) {
     res.json(ini)
   })
 }
-
+// ssh-keygen -t rsa -b 4096 -C "2311383195@qq.com"
+// git clone git@github.com:jack200111/IOTgateway.git
 // 定义接口
 getData('/login', login)
 getData('/sysinfo', sysinfo)
