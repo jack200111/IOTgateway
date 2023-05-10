@@ -83,7 +83,6 @@ function jsonData (filePath, jsonData) {
 
   // 将ini文件写入文件
   console.log(iniData, 'iniData')
-  console.log(filePath, 'filePath')
   fs.writeFileSync(filePath, iniData)
   // 检查：读取文件
   console.log(fs.readFileSync(filePath, 'utf-8'))
