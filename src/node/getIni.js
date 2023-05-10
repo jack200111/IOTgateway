@@ -86,6 +86,11 @@ app.post('/postSh', (req, res) => {
   })
 })
 
+<<<<<<< .mine
+
+=======
+
+>>>>>>> .theirs
 // 启动服务器
 const port = 3000
 app.listen(port, () => {
