@@ -53,6 +53,22 @@ export default {
               selected: valueArr[1],
               slot: valueArr[valueArr.length - 1]
             })
+            if (item === 'IP类型' && val === 'netconfig') {
+              console.log(this.netconfigDisable)
+              if (valueArr[1] === 'OFF') {
+                this.netconfigDisable = false
+              } else {
+                this.netconfigDisable = true
+              }
+            }
+            if (item === 'IP类型' && val === 'wificonfig') {
+              console.log(this.wificonfigDisable)
+              if (valueArr[1] === 'OFF') {
+                this.wificonfigDisable = false
+              } else {
+                this.wificonfigDisable = true
+              }
+            }
           }
         })
       })

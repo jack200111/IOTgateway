@@ -18,6 +18,7 @@
       <!-- 无线网卡 -->
       <div>
         <h1>{{ title2 }}</h1>
+        {{  }}
         <div class="content">
           <!-- 动静态 -->
           <netOrWifi :typeArrayName="wificonfig" @fn="IsDisableFn2"></netOrWifi>
@@ -30,7 +31,7 @@
       </div>
     </div>
     <!-- 按钮 -->
-    <myButton :typeArray="netconfig"></myButton>
+    <myButton :typeArray="netconfig" @fn2="getSh"></myButton>
   </div>
 </template>
 
@@ -53,8 +54,8 @@ export default {
       title2: '',
       netconfig: [],
       wificonfig: [],
-      netconfigDisable: true,
-      wificonfigDisable: false
+      netconfigDisable: false,
+      wificonfigDisable: true
     }
   },
   mounted () {

@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     fn (value, item) {
-      this.$emit('fn', value, item)
+      this.$emit('fn2', value, item)
     }
   }
 }
