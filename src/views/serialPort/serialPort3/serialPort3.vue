@@ -1,7 +1,7 @@
 <!-- 系统 -->
 <template>
   <div>
-    <port :typeArray="uart3" :title="title"></port>
+    <port :typeArray="uart3" :title="title" @fn="getSh2"></port>
   </div>
 </template>
 
@@ -26,6 +26,16 @@ export default {
     this.fetchData('uart3')
   },
   methods: {
+    // 保存串口
+    async save1 (value) {
+      let val = null
+      this.uart3.forEach((item) => {
+        if (item.prop === '本地端口') {
+          val = item
+        }
+      })
+      return val
+    },
     async save () {
       await http.post('/uart3', { UART3: this.uart3, title: this.title })
     }

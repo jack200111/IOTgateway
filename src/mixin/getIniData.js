@@ -25,9 +25,8 @@ export default {
               slot: valueArr[2] && valueArr[2]
             })
             if (item === '本地端口') {
-              this.oldPort = valueArr[1]
-              this.newPort = valueArr[1]
-              console.log(this.oldPort)
+              this.oldPort = parseInt(valueArr[1])
+              // console.log(this.oldPort)
             }
           } else if (value.split(',')[0] === 'select' && item === '工作方式') {
             this[val].push({
@@ -54,7 +53,7 @@ export default {
               slot: valueArr[valueArr.length - 1]
             })
             if (item === 'IP类型' && val === 'netconfig') {
-              console.log(this.netconfigDisable)
+              // console.log(this.netconfigDisable)
               if (valueArr[1] === 'OFF') {
                 this.netconfigDisable = false
               } else {
@@ -62,7 +61,7 @@ export default {
               }
             }
             if (item === 'IP类型' && val === 'wificonfig') {
-              console.log(this.wificonfigDisable)
+              // console.log(this.wificonfigDisable)
               if (valueArr[1] === 'OFF') {
                 this.wificonfigDisable = false
               } else {
@@ -82,8 +81,8 @@ export default {
     },
     // 端口改变
     changePort (val) {
-      this.newPort = val
-      console.log(this.newPort)
+      this.newPort = parseInt(val)
+      // console.log(this.newPort)
     },
     // 改变工作方式
     onCountryChange (item) {
@@ -95,18 +94,49 @@ export default {
       }
     },
     // 串口页面
-    getSh2 (value, item) {
+    async getSh2 (value) {
       // 先判断
       const arr = JSON.parse(localStorage.getItem('portArr'))
-      console.log(this.oldPort, 'oldPort')
-      console.log(this.newPort, 'newPort')
-      if (this.oldPort !== this.newPort && arr.includes(this.newPort)) {
-        alert(this.newPort + '端口已经存在,请勿使用端口:' + arr.filter(item => item !== this.oldPort).join(','))
+      const newPort = await this.save1()
+      let newPortVal = parseInt(newPort.value)
+      // console.log(this.oldPort, 'oldPort')
+      // console.log(newPort, 'newPort')
+      if (this.oldPort !== newPortVal && arr.includes(newPortVal)) {
+        alert(newPortVal + '端口已经存在,请勿使用端口:' + arr.filter(item => item !== this.oldPort).join(','))
+        newPort.value = this.oldPort
+        newPortVal = this.oldPort
+        // console.log(newPort)
         return
       }
       http.post('/postSh', { value }).then(res => {})
       // 写入
-      this.save(item)
+      this.save()
+      // 获取之前的旧端口
+      const arr2 = JSON.parse(localStorage.getItem('portArr'))
+      // 获取新端口，替换旧端口
+      const i = arr2.findIndex((item) => item === parseInt(this.oldPort))
+      // console.log(i)
+      // console.log(arr2)
+      // console.log(parseInt(this.oldPort))
+      if (i === -1) {
+        arr2.push(newPortVal)
+        arr2.sort(function (a, b) {
+          return a - b
+        })
+      } else {
+        arr2[i] = newPortVal
+      }
+      // console.log(arr2[i])
+      // console.log(newPortVal)
+      // console.log(arr2)
+      // 本地存储端口键值
+      localStorage.setItem('portArr', JSON.stringify(arr2))
+      // 重新修改旧的值，用于下次判断
+      this.oldPort = newPortVal
+      // 临时存储端口键名
+      const protName = sessionStorage.getItem('protName')
+      // 修改记录端口
+      http.post('/portAll', { portAll: arr2, title: 'portAll', protName }).then((res) => {})
     }
   }
 }

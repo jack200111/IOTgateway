@@ -47,6 +47,15 @@ function jsonData (filePath, jsonData) {
     }
   }
 
+  if (keyName === 'portAll') {
+    iniData += `[${jsonData[title]}]\n`
+    // iniData += `${item.prop}=${item.selected}\n`
+    // 特殊情况
+    console.log(data)
+    const name = jsonData[Object.keys(jsonData)[2]]
+    iniData += `${name}=${data.join(',')}`
+  }
+
   // 串口 // 无线 有限网络设置
   const uarts = [
     'UART1',
@@ -83,6 +92,7 @@ function jsonData (filePath, jsonData) {
 
   // 将ini文件写入文件
   console.log(iniData, 'iniData')
+  console.log(filePath, 'filePath')
   fs.writeFileSync(filePath, iniData)
   // 检查：读取文件
   console.log(fs.readFileSync(filePath, 'utf-8'))

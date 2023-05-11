@@ -12,6 +12,7 @@ export default {
   data () {
     return {
       portAll: ''
+      // name: '本地端口'
     }
   },
   mounted () {
@@ -26,13 +27,15 @@ export default {
         const data = res.data[Object.keys(res.data)]
         // item:中文键名
         Object.keys(data).forEach((item) => {
-          const valueArr = data[item].split(',')
+          // 存储中文键名
+          sessionStorage.setItem('protName', item)
+          const valueArr = data[item].split(',').map(Number)
           const portArr = valueArr
           // console.log(valueArr)
           // 存到本地
           localStorage.setItem('portArr', JSON.stringify(portArr))
-          const arr = JSON.parse(localStorage.getItem('portArr'))
-          console.log(arr)
+          JSON.parse(localStorage.getItem('portArr'))
+          // console.log(arr)
         })
       })
     }

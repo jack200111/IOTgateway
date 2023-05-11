@@ -72,6 +72,7 @@ postData('/uart3', uart3)
 postData('/uart4', uart4)
 postData('/zabbixAgent', zabbixAgent)
 postData('/setPassword', setPassword)
+postData('/portAll', portAll)
 
 postData('/sysinfoPost', '/tmp/iwscan.tmp')
 

@@ -77,7 +77,7 @@
     <!-- 按钮 -->
     <span v-for="item in typeArray" :key="item.prop">
       <template v-if="item.type === 'button'">
-        <button class="btn btn1" @click="getSh2(item.value)">
+        <button class="btn btn1" @click="fn(item.value)">
           {{ item.prop }}
         </button>
         <span class="unit">&nbsp;{{ item.slot }}</span>
@@ -98,18 +98,23 @@ export default {
   components: {
     typeAll
   },
-  mixins: [myMixin]
-//   data () {
-//     return {
-//       title: '',
-//       uart1: [],
-//       oldPort: '',
-//       newPort: ''
-//     }
-//   },
-//   mounted () {
-//     this.fetchData('uart1')
-//   },
+  mixins: [myMixin],
+  //   data () {
+  //     return {
+  //       title: '',
+  //       uart1: [],
+  //       oldPort: '',
+  //       newPort: ''
+  //     }
+  //   },
+  //   mounted () {
+  //     this.fetchData('uart1')
+  //   },
+  methods: {
+    fn (value) {
+      this.$emit('fn', value)
+    }
+  }
 //   methods: {
 //     // 保存串口
 //     async save () {
