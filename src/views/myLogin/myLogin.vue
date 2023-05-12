@@ -1,8 +1,8 @@
 <template>
   <div class="bg" id="">
-    <img class="img" id="myImage"  src="@/assets/image/1087.png" alt="">
+    <img class="img" id="myImage"  src="@/assets/image/1683689877641.jpg" alt="">
     <div class="login">
-      <div class="title">瑞恩智慧物联IOT网关</div>
+      <div class="title">XX智慧物联IOT网关</div>
       <!-- 账号 -->
       <p>
         <span><img class="icon" src="@/assets/image/user.png" alt=""></span>
@@ -30,7 +30,7 @@ export default {
       imgWidth: 500,
       imgHeight: 768,
       user: 'admin',
-      password: '',
+      password: '123456', // 123456
       iniData: {
         user: '',
         password: '',
@@ -166,6 +166,7 @@ export default {
           border: none;
           outline: none;
           flex: 1;
+          height: 70px;
           text-indent: 1em;
           font-size: 24px;
           color: #333333;
