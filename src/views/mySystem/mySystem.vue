@@ -91,11 +91,19 @@ export default {
   data () {
     return {
       sysinfo: [
+        { type: 'text', prop: '型号', value: 'GW001', label: 'Model' },
+        { type: 'text', prop: '系统版本', value: 'Version V001', label: 'Version' },
+        { type: 'text', prop: '内核版本', value: 'Linux 4.4.19', label: 'Kernel' },
+        { type: 'text', prop: '设备ID', value: '662aa30f09a2f579', label: 'Serial' },
+        { type: 'text', prop: '以太网MAC', value: '112233445566', label: 'LanMAC' },
+        { type: 'text', prop: '无线网MAC', value: '2023-05-04 10:03:00', label: 'WifiMAC' },
+        { type: 'button', prop: '重启设备', value: '/usr/local/bin/reboot.sh', label: 'WifiMAC' },
+        { type: 'button', prop: '恢复出厂', value: '/usr/local/bin/recovery.sh', label: 'WifiMAC' },
+        { type: 'button', prop: '时间校准', value: '/usr/local/bin/ntupdate.sh', label: 'WifiMAC' }
       ]
     }
   },
   mounted () {
-    this.fetchData('sysinfo')
     setInterval(() => {
       this.sysinfo.forEach(item => {
         if (item.prop === 'RTC时间') {

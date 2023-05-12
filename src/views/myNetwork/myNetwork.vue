@@ -228,17 +228,61 @@ export default {
   mixins: [myMixin],
   data () {
     return {
-      title: '',
-      title2: '',
-      netconfig: [],
-      wificonfig: [],
+      title: '有限网卡',
+      title2: '无限网卡',
+      netconfig: [
+        { prop: 'IP地址', value: '172.16.128.14', type: 'input', slot: '' },
+        { prop: '子网掩码', value: '255.255.255.0', type: 'input', slot: '' },
+        { prop: '网关', value: '172.16.128.254', type: 'input', slot: '' },
+        { prop: 'DNS', value: '114.114.114.114', type: 'input', slot: '' },
+        {
+          prop: 'IP类型',
+          value: ['OFF', 'ON'],
+          type: 'select',
+          selected: 'ON',
+          slot: ''
+        },
+        {
+          prop: '扫描',
+          value: '/usr/local/bin/iwscan.sh',
+          type: 'button',
+          slot: ''
+        },
+        {
+          prop: '保存及应用',
+          value: '/usr/local/bin/netsave.sh',
+          type: 'button',
+          slot: ''
+        }
+      ],
+      wificonfig: [
+        { prop: 'IP地址', value: '172.16.128.14', type: 'input', slot: '' },
+        { prop: '子网掩码', value: '255.255.255.0', type: 'input', slot: '' },
+        { prop: '网关', value: '172.16.128.254', type: 'input', slot: '' },
+        { prop: 'DNS', value: '114.114.114.114', type: 'input', slot: '' },
+        {
+          prop: 'IP类型',
+          value: ['OFF', 'ON'],
+          type: 'select',
+          selected: 'OFF',
+          slot: ''
+        },
+        {
+          prop: 'SSID',
+          value: ['keji'],
+          type: 'select',
+          selected: 'keji',
+          slot: ''
+        },
+        { prop: '密码', value: '21680186', type: 'input', slot: '' }
+      ],
       netconfigDisable: false,
       wificonfigDisable: false
     }
   },
   mounted () {
-    this.fetchData('netconfig')
-    this.fetchData('wificonfig')
+    // this.fetchData('netconfig')
+    // this.fetchData('wificonfig')
   },
   methods: {
     async save () {
@@ -272,7 +316,6 @@ export default {
             console.log(error)
           })
       }
-      http.post('/postSh', { value }).then((res) => {})
     },
     IsDisable (item) {
       console.log(item.selected)

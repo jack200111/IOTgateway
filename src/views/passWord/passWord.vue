@@ -53,7 +53,32 @@ export default {
       newPassword1: '',
       newPassword2: '',
       title: '',
-      setPassword: [],
+      setPassword: [
+        {
+          prop: '原密码',
+          value: '',
+          type: 'input',
+          slot: ''
+        },
+        {
+          prop: '新密码',
+          value: '',
+          type: 'input',
+          slot: ''
+        },
+        {
+          prop: '确认密码',
+          value: '',
+          type: 'input',
+          slot: ''
+        },
+        {
+          prop: '保存',
+          value: '/config/sqlite.db',
+          type: 'button',
+          slot: ''
+        }
+      ],
       refreshPassword: ''
     }
   },
@@ -68,7 +93,8 @@ export default {
   },
   async mounted () {
     // 动态页面数据
-    this.fetchData('setPassword')
+    // this.fetchData('setPassword')
+    console.log(this.setPassword)
     // 页面刷新 重新请求丢失数据
     if (!this.password) {
       const res = await this.getIni()
@@ -135,52 +161,14 @@ export default {
     // 页面刷新 重新请求
     async getIni () {
       // 请求所有账号
-      const res = await http.get('/login')
-      // 获取当前账号信息
-      let currentObject = {}
-      Object.keys(res.data).forEach((item) => {
-        if (item === localStorage.getItem('user')) {
-          currentObject = res.data[item]
-        }
-      })
-      // 重新保存仓库
-      this.$store.commit('changeIniData', res.data)
-      this.$store.commit('changeUser', currentObject.user)
-      this.$store.commit('changePassword', currentObject.password)
-      return currentObject
+      return null
     },
-    // 清空密码
-    // clearPassword2 () {
-    //   // this.oldPassword = ''
-    //   // this.newPassword1 = ''
-    //   // this.newPassword2 = ''
-    //   this.setPassword[0].value = ''
-    //   this.setPassword[1].value = ''
-    //   this.setPassword[2].value = ''
-    // },
     clearPassword () {
       this.setPassword[1].value = ''
       this.setPassword[2].value = ''
     },
     // 动态页面数据
     fetchData (val) {
-      http.get('/' + val).then((res) => {
-        // 标题
-        this.title = Object.keys(res.data)[0]
-        // 对象数据
-        const data = res.data[Object.keys(res.data)]
-        // item:中文键名
-        Object.keys(data).forEach((item) => {
-          const valueArr = data[item].split(',')
-          // 静态文本 按钮
-          this[val].push({
-            prop: item,
-            value: valueArr[1],
-            type: valueArr[0],
-            slot: valueArr[2] && valueArr[2]
-          })
-        })
-      })
     },
     getSh (value, item) {
       // 请求sh

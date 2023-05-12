@@ -22,7 +22,7 @@
 
 <script>
 import router from '@/router'
-import md5 from 'js-md5'
+// import md5 from 'js-md5'
 import http from '@/utils/http'
 export default {
   data () {
@@ -48,36 +48,38 @@ export default {
         return
       }
       // 加密密码
-      const encrypted = md5(this.password)
-      const storedPassword = await this.getIni()// 请求当前账号信息
+      // const encrypted = md5(this.password)
+      // const storedPassword = await this.getIni()// 请求当前账号信息
       // 第一次登录，存储加密的hash值
-      if (!storedPassword.MD5) {
-        // 密码错误
-        if (this.password !== storedPassword.password) {
-          this.alertPassWarn()
-          return
-        }
-        // 密码正确，写入MD5，后续登录
-        storedPassword.MD5 = encrypted
-        await http.post('/login', { iniData: this.iniData })
-        router.push('/myHome/sysinfo')
-        alert('登录成功')
-      } else {
-        // 第二次登录，先判断上一次的哈希值，如果一样才登录，否则提示，并清空
-        if (storedPassword.MD5 === encrypted) {
-          // 密码正确，执行登录操作
-          router.push('/myHome/sysinfo')
-          // 存到仓库
-          localStorage.setItem('user', this.user)
-          this.$store.state.user = this.user
-          this.$store.state.password = this.password
-          this.$store.state.iniData = this.iniData
-          alert('登录成功')
-        } else {
-          // 密码错误，提示用户重新输入
-          this.alertPassWarn()
-        }
-      }
+      // if (!storedPassword.MD5) {
+      //   // 密码错误
+      //   if (this.password !== storedPassword.password) {
+      //     this.alertPassWarn()
+      //     return
+      //   }
+      //   // 密码正确，写入MD5，后续登录
+      //   storedPassword.MD5 = encrypted
+      //   await http.post('/login', { iniData: this.iniData })
+      //   router.push('/myHome/sysinfo')
+      //   alert('登录成功')
+      // } else {
+      //   // 第二次登录，先判断上一次的哈希值，如果一样才登录，否则提示，并清空
+      //   if (storedPassword.MD5 === encrypted) {
+      //     // 密码正确，执行登录操作
+      //     router.push('/myHome/sysinfo')
+      //     // 存到仓库
+      //     localStorage.setItem('user', this.user)
+      //     this.$store.state.user = this.user
+      //     this.$store.state.password = this.password
+      //     this.$store.state.iniData = this.iniData
+      //     alert('登录成功')
+      //   } else {
+      //     // 密码错误，提示用户重新输入
+      //     this.alertPassWarn()
+      //   }
+      // }
+      router.push('/myHome/sysinfo')
+      alert('登录成功')
     },
     alertPassWarn () {
       alert('密码错误')

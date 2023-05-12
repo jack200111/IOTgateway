@@ -71,8 +71,6 @@ export default {
     },
     // 除串口页面
     getSh (value, item) {
-      http.post('/postSh', { value }).then(res => {
-      })
       // 写入
       this.save(item)
     },

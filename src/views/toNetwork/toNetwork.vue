@@ -116,18 +116,32 @@ export default {
   mixins: [myMixin],
   data () {
     return {
-      title: '',
-      zabbixAgent: []
+      title: 'zabbix代理',
+      zabbixAgent: [
+        { prop: '设备名称', value: '172.16.128.14', type: 'input', slot: '' },
+        { prop: '服务器地址', value: '172.16.128.13', type: 'input', slot: '' },
+        { prop: '服务端口', value: '10050', type: 'input', slot: '' },
+        {
+          prop: '备注提示',
+          value: '串口需启用TCPServer+ModbusTCP',
+          type: 'text',
+          slot: ''
+        },
+        {
+          prop: '保存及应用',
+          value: '/usr/local/bin/zabbixsave.sh',
+          type: 'button',
+          slot: ''
+        }
+      ]
     }
   },
   mounted () {
-    this.fetchData('zabbixAgent')
+    // this.fetchData('zabbixAgent')
   },
   methods: {
     getSh (value) {
       this.save()
-      http.post('/postSh', { value }).then(res => {
-      })
     },
     async save () {
       if (confirm('设备重启生效是否继续')) {

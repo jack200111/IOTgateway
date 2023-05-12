@@ -166,14 +166,62 @@ export default {
   mixins: [myMixin],
   data () {
     return {
-      title: '',
-      uart4: [],
+      title: '串口4',
+      uart4: [
+        {
+          prop: '波特率',
+          value: '115200',
+          type: 'input',
+          slot: '(600-921600)bps'
+        },
+        {
+          prop: '数据位',
+          value: ['8', '6'],
+          type: 'select',
+          selected: '8',
+          slot: 'bit'
+        },
+        {
+          prop: '校验位',
+          value: ['None', 'Even', 'Odd'],
+          type: 'select',
+          selected: 'None',
+          slot: ''
+        },
+        {
+          prop: '停止位',
+          value: ['1', '2'],
+          type: 'select',
+          selected: '1',
+          slot: ''
+        },
+        { prop: '当前串口模式', value: 'RS485', type: 'text', slot: '' },
+        {
+          prop: '流控模式',
+          value: ['None', 'XON/XOFF'],
+          type: 'select',
+          selected: 'None',
+          slot: ''
+        },
+        {
+          prop: '本地端口',
+          value: '1033',
+          type: 'smallInput',
+          slot: '(1~65535)'
+        },
+        {
+          prop: '保存及应用',
+          value: '/usr/local/bin/uart1save.sh',
+          type: 'button',
+          slot: ''
+        }
+      ],
       oldPort: '',
       newPort: ''
     }
   },
   mounted () {
-    this.fetchData('uart4')
+    // this.fetchData('uart4')
   },
   methods: {
     async save () {
