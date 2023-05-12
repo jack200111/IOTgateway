@@ -130,12 +130,7 @@ export default {
       })
     },
     async save () {
-      if (confirm('设备重启生效是否继续')) {
-        // 获取最终的数据格式
-        // console.log(this.inputInterArr)
-        // 写入
-        await http.post('/zabbixAgent', { zabbixAgent: this.zabbixAgent, title: this.title })
-      }
+      await http.post('/zabbixAgent', { zabbixAgent: this.zabbixAgent, title: this.title })
     }
   }
 }
