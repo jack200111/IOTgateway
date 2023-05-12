@@ -2,7 +2,7 @@
   <div class="box">
     <!-- <h1>myHome</h1> -->
     <div class="top">
-      <div class="title">XX科技</div>
+      <div class="title">瑞恩科技</div>
       <div class="middle">IOT网关</div>
       <div class="button">
         <!-- <button class="btn1">English</button> -->

@@ -10,7 +10,7 @@
               <!-- 下拉框 -->
               <template v-if="item.type === 'select'">
                 <span class="prop">{{ item.prop }}:</span>
-                <select class="select" v-model="item.selected" @change="IsDisable(item)">
+                <select class="select" v-model="item.selected" @change="IsDisable2(item)">
                   <option
                     v-for="(item2, index2) in item.value"
                     :key="index2"
@@ -281,6 +281,14 @@ export default {
         this.netconfigDisable = true
       } else {
         this.netconfigDisable = false
+      }
+    },
+    IsDisable2 (item) {
+      if (item.selected === 'ON') {
+        // 动态 禁用
+        this.wificonfigDisable = true
+      } else {
+        this.wificonfigDisable = false
       }
     }
   }

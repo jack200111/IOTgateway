@@ -1,15 +1,5 @@
 <template>
   <div class="bg">
-    <!-- <div class="login">
-      <div class="title">密码修改</div>
-      <div class="input">
-        <p><span>原密码: </span><input type="password" v-model="oldPassword"/></p>
-        <p><span>新密码: </span><input type="password" v-model="newPassword1"/></p>
-        <p><span>确认密码: </span><input type="password" v-model="newPassword2"/></p>
-      </div>
-      <button @click="changePassword" @keyup.enter="changePassword" class="btn btn1">登录</button>
-      <button @click="clearPassword" class="btn btn2">取消</button>
-    </div> -->
      <div>
     <div class="display">
       <div class="left">

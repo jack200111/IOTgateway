@@ -2,7 +2,7 @@
   <div class="bg" id="">
     <img class="img" id="myImage"  src="@/assets/image/1683689877641.jpg" alt="">
     <div class="login">
-      <div class="title">XX智慧物联IOT网关</div>
+      <div class="title">瑞恩智慧物联IOT网关</div>
       <!-- 账号 -->
       <p>
         <span><img class="icon" src="@/assets/image/user.png" alt=""></span>
