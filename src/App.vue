@@ -33,8 +33,8 @@ export default {
           const portArr = valueArr
           // console.log(valueArr)
           // 存到本地
-          localStorage.setItem('portArr', JSON.stringify(portArr))
-          JSON.parse(localStorage.getItem('portArr'))
+          sessionStorage.setItem('portArr', JSON.stringify(portArr))
+          JSON.parse(sessionStorage.getItem('portArr'))
           // console.log(arr)
         })
       })

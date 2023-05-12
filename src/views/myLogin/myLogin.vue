@@ -67,7 +67,7 @@ export default {
           // 密码正确，执行登录操作
           router.push('/myHome/sysinfo')
           // 存到仓库
-          localStorage.setItem('user', this.user)
+          sessionStorage.setItem('user', this.user)
           this.$store.state.user = this.user
           this.$store.state.password = this.password
           this.$store.state.iniData = this.iniData

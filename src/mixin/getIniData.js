@@ -96,7 +96,7 @@ export default {
     // 串口页面
     async getSh2 (value) {
       // 先判断
-      const arr = JSON.parse(localStorage.getItem('portArr'))
+      const arr = JSON.parse(sessionStorage.getItem('portArr'))
       const newPort = await this.save1()
       let newPortVal = parseInt(newPort.value)
       // console.log(this.oldPort, 'oldPort')
@@ -112,7 +112,7 @@ export default {
       // 写入
       this.save()
       // 获取之前的旧端口
-      const arr2 = JSON.parse(localStorage.getItem('portArr'))
+      const arr2 = JSON.parse(sessionStorage.getItem('portArr'))
       // 获取新端口，替换旧端口
       const i = arr2.findIndex((item) => item === parseInt(this.oldPort))
       // console.log(i)
@@ -130,7 +130,7 @@ export default {
       // console.log(newPortVal)
       // console.log(arr2)
       // 本地存储端口键值
-      localStorage.setItem('portArr', JSON.stringify(arr2))
+      sessionStorage.setItem('portArr', JSON.stringify(arr2))
       // 重新修改旧的值，用于下次判断
       this.oldPort = newPortVal
       // 临时存储端口键名

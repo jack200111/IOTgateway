@@ -139,7 +139,7 @@ export default {
       // 获取当前账号信息
       let currentObject = {}
       Object.keys(res.data).forEach((item) => {
-        if (item === localStorage.getItem('user')) {
+        if (item === sessionStorage.getItem('user')) {
           currentObject = res.data[item]
         }
       })
