@@ -1,6 +1,5 @@
 <template>
   <div class="bg" id="">
-    <!-- <img class="img" id="myImage"  src="@/assets/image/IOT.jpg" alt=""> -->
     <div class="login">
       <div class="title">瑞恩智慧物联IOT网关</div>
       <!-- 账号 -->
@@ -109,7 +108,7 @@ export default {
   width: 100%;
   height: 100%;
   position: absolute;
-  background-image: url('@/assets/image/IOT.jpg');
+  background-image: url('@/assets/image/1683689877641.jpg');
   background-size: cover; /* 设置为 cover 或者 contain */
   background-position: center;
 }
