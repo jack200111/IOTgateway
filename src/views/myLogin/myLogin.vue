@@ -1,6 +1,6 @@
 <template>
   <div class="bg" id="">
-    <img class="img" id="myImage"  src="@/assets/image/1683689877641.jpg" alt="">
+    <!-- <img class="img" id="myImage"  src="@/assets/image/IOT.jpg" alt=""> -->
     <div class="login">
       <div class="title">瑞恩智慧物联IOT网关</div>
       <!-- 账号 -->
@@ -105,12 +105,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.img {
+.bg {
   width: 100%;
-  float:right ;
   height: 100%;
   position: absolute;
-  z-index: -1;
+  background-image: url('@/assets/image/IOT.jpg');
+  background-size: cover; /* 设置为 cover 或者 contain */
+  background-position: center;
 }
 .bg {
   width: 100%;
